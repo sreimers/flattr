@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://api.flattr.com/plugins/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.5
+Version: 0.6
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 // Defines
 
-define(FLATTR_WP_VERSION, '0.5');
+define(FLATTR_WP_VERSION, '0.6');
 define(FLATTR_WP_SCRIPT,  'http://api.flattr.com/button/load.js');
 
 
@@ -121,10 +121,12 @@ function flattr_get_excerpt( $excerpt_max_length = 1024 )
 	if (! $excerpt)
 	{
 		$excerpt = $post->post_content;
-        	$excerpt = strip_shortcodes( $excerpt );
-        	$excerpt = str_replace(']]>', ']]&gt;', $excerpt);
-        	$excerpt = strip_tags($excerpt);
     	}
+       	$excerpt = strip_tags($excerpt);
+       	$excerpt = strip_shortcodes( $excerpt );
+       	$excerpt = str_replace(']]>', ']]&gt;', $excerpt);
+
+	$excerpt = preg_replace('/httpvh:\/\/[^ ]+/', '', $excerpt);
 
     	// Try to shorten without breaking words
     	if ( strlen($excerpt) > $excerpt_max_length )

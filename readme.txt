@@ -32,6 +32,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 0.6 =
+* httpvh (Smart YouTube) urls are now stripped when creating excerpt from post content.
+
 = 0.5 =
 * Fixed a bug that caused blog posts to display incorrectly when no excerpt was entered. 
 
@@ -39,6 +42,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 * First public version
 
 == Upgrade Notice ==
+
+= 0.6 =
+Previous version didnt work with Smart YouTube when no excerpt was entered.
 
 = 0.5 =
 Previous version makes your blog posts display incorrectly if you don't enter an excerpt.
