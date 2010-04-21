@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://api.flattr.com/plugins/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.4
+Version: 0.5
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 // Defines
 
-define(FLATTR_WP_VERSION, '0.4');
+define(FLATTR_WP_VERSION, '0.5');
 define(FLATTR_WP_SCRIPT,  'http://api.flattr.com/button/load.js');
 
 
@@ -24,6 +24,7 @@ if (is_admin())
 
 if (get_option('flattr_aut', 'on') == 'on')
 {
+	remove_filter('get_the_excerpt', 'wp_trim_excerpt');
 	add_filter('get_the_excerpt', create_function('$content', 'remove_filter("the_content", "flattr_the_content"); return $content;'), 9);
 	add_filter('get_the_excerpt', create_function('$content', 'add_filter("the_content", "flattr_the_content"); return $content;'), 11);
 	add_filter('the_content', 'flattr_the_content'); 
@@ -109,9 +110,40 @@ function get_the_flattr_permalink()
 
 	if (strlen($uid) && strlen($cat))
 	{
-		return flattr_permalink($uid, $cat, get_the_title(), get_the_excerpt(), strip_tags(get_the_tag_list('', ',', '')), get_permalink());
+		return flattr_permalink($uid, $cat, get_the_title(), flattr_get_excerpt(), strip_tags(get_the_tag_list('', ',', '')), get_permalink());
 	}
 }
+
+function flattr_get_excerpt( $excerpt_max_length = 1024 )
+{
+	global $post;
+	$excerpt = $post->post_excerpt;
+	if (! $excerpt)
+	{
+		$excerpt = $post->post_content;
+        	$excerpt = strip_shortcodes( $excerpt );
+        	$excerpt = str_replace(']]>', ']]&gt;', $excerpt);
+        	$excerpt = strip_tags($excerpt);
+    	}
+
+    	// Try to shorten without breaking words
+    	if ( strlen($excerpt) > $excerpt_max_length )
+    	{
+        	$pos = strpos($excerpt, ' ', $excerpt_max_length);
+        	if ($pos !== false)
+        	{
+            		$excerpt = substr($excerpt, 0, $pos);
+        	}
+    	}
+
+    	// If excerpt still too long
+    	if ( strlen($excerpt) > $excerpt_max_length )
+    	{
+        	$excerpt = substr($excerpt, 0, $excerpt_max_length);
+    	}
+    	return $excerpt;
+}
+
 
 function the_flattr_permalink()
 {

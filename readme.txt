@@ -31,10 +31,16 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 0.5 =
+* Fixed a bug that caused blog posts to display incorrectly when no excerpt was entered. 
+
 = 0.4 =
 * First public version
 
 == Upgrade Notice ==
+
+= 0.5 =
+Previous version makes your blog posts display incorrectly if you don't enter an excerpt.
 
 = 0.4 =
 Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
