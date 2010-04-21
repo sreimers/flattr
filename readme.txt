@@ -3,6 +3,7 @@ Contributors: flattr.com
 Tags: flattr, donate, micropayments
 Requires at least: 2.9.0
 Tested up to: 2.9.2
+Stable tag: trunk
 
 This plugin allows you to easily add a Flattr button to your wordpress blog.
 
