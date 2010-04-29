@@ -21,9 +21,10 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 2. Go to the WordPress control panel and find the 'Plugins' section
 3. Activate the plugin 'Flattr'
 4. Go to the 'Options' section and select 'Flattr'
-5. Enter your default category (which usually would be 'text' if you have a normal blog), and your Flattr user ID (your user ID can be found on your dashboard on http://flattr.com/)
+5. Select your default category (which usually would be 'text' if you have a normal blog), select your default language and type in your Flattr user ID (your user ID can be found on your dashboard on http://flattr.com/)
 6. If you want the Flattr button to be automagically included at the end of your posts, leave the checkbox checked
 7. If you want to add the Flattr button manually in your theme, uncheck the checkbox and use the following code snippet:
+8. When writing or editing a blog post you have the ability to select category and language for this specific blog post.
 
 `<?php the_flattr_permalink(); ?>`
 
@@ -31,6 +32,11 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 
 == Changelog ==
+
+= 0.7 =
+* Changed category setting to select box instead of input field.
+* Added setting for default language.
+* Added ability to edit category and language settings per post.
 
 = 0.6 =
 * httpvh (Smart YouTube) urls are now stripped when creating excerpt from post content.
@@ -42,6 +48,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 * First public version
 
 == Upgrade Notice ==
+
+= 0.7 =
+Language support. Upgrade required.
 
 = 0.6 =
 Previous version didnt work with Smart YouTube when no excerpt was entered.
