@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://api.flattr.com/plugins/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.7
+Version: 0.71
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 // Defines
 
-define(FLATTR_WP_VERSION, '0.7');
+define(FLATTR_WP_VERSION, '0.71');
 define(FLATTR_WP_SCRIPT,  'http://api.flattr.com/button/load.js');
 
 $flattr_categorys = array('text', 'images', 'audio', 'video', 'software', 'rest');
@@ -165,7 +165,7 @@ function flattr_settings_page()
 						<select name="flattr_cat">
 							<?php foreach ( get_flattr_categorys() as $category ): ?>
 							<option value="<?php echo $category?>"<?php echo ($category == get_option('flattr_cat')) ? ' selected' : ''; ?>><?php echo $category?></option>
-							<? endforeach ?>
+							<?php endforeach ?>
 						</select>
 					</td>
 				</tr>

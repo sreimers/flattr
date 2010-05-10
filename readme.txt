@@ -33,6 +33,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 0.71 =
+* Modified plugin to not use short php open tags
+
 = 0.7 =
 * Changed category setting to select box instead of input field.
 * Added setting for default language.
@@ -48,6 +51,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 * First public version
 
 == Upgrade Notice ==
+
+= 0.71 =
+Short php open tags where used in some places. Upgrade if your host does not support short open tags.
 
 = 0.7 =
 Language support. Upgrade required.
