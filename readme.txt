@@ -33,6 +33,11 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 0.8 =
+* Cleaned up the code
+* Added option for disabling the button on a per post basis
+* Added support for the compact button.
+
 = 0.71 =
 * Modified plugin to not use short php open tags
 
@@ -70,4 +75,7 @@ Upgrade notices describe the reason a user should upgrade.  No more than 300 cha
 
 == Support ==
 
-You can always ask us for help on flattrbeta@flattr.com - or twitter to #flattr and ask the whole community!
+Direct support: https://flattr.com/support/contact
+IRC: #flattr on Freequest 
+Forum: http://forum.flattr.com/
+Twitter: Twitter to #flattr and the community or a friendly developer might help you.
