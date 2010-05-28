@@ -20,6 +20,7 @@ class Flattr_Settings
 		register_setting('flattr-settings-group', 'flattr_cat', 	array($this, 'validate_category'));
 		register_setting('flattr-settings-group', 'flattr_lng',		array($this, 'validate_language'));
 		register_setting('flattr-settings-group', 'flattr_compact', array($this, 'validate_checkbox'));
+		register_setting('flattr-settings-group', 'flattr_hide',	array($this, 'validate_checkbox'));
     }
 
     public function render()
@@ -48,7 +49,7 @@ class Flattr_Settings
     }
     
     public function validate_userid($userId)
-    {
-    	return (is_numeric($userId) ? $userId : '');
+    {    
+    	return $userId;
     }
 }

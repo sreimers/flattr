@@ -17,11 +17,13 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Installation ==
 
+Note that we only support PHP 5 and WordPress 2.9 or above.
+
 1. Upload the folder 'flattr' to your server in the folder '/wp-content/plugins/'
 2. Go to the WordPress control panel and find the 'Plugins' section
 3. Activate the plugin 'Flattr'
 4. Go to the 'Options' section and select 'Flattr'
-5. Select your default category (which usually would be 'text' if you have a normal blog), select your default language and type in your Flattr user ID (your user ID can be found on your dashboard on http://flattr.com/)
+5. Select your default category (which usually would be 'text' if you have a normal blog), select your default language and type in your Flattr user ID (your user ID can be found on your dashboard on http://flattr.com/ )
 6. If you want the Flattr button to be automagically included at the end of your posts, leave the checkbox checked
 7. If you want to add the Flattr button manually in your theme, uncheck the checkbox and use the following code snippet:
 8. When writing or editing a blog post you have the ability to select category and language for this specific blog post.
@@ -33,10 +35,16 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 0.9 =
+* Fixed a bug where including files would sometimes break other plugins.
+* Will now give error if the plugin isn't compatible with the installed version of WordPress or PHP.
+* Added support for hidding things from listings on flattr.com.
+* Will warn users that enter their user name instead of their user id.
+* Added support for the compact button.
+
 = 0.8 =
 * Cleaned up the code
 * Added option for disabling the button on a per post basis
-* Added support for the compact button.
 
 = 0.71 =
 * Modified plugin to not use short php open tags
@@ -56,6 +64,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 * First public version
 
 == Upgrade Notice ==
+
+= 0.9 =
+New goodies available. Fun for the whole family!
 
 = 0.71 =
 Short php open tags where used in some places. Upgrade if your host does not support short open tags.

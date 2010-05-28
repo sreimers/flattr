@@ -22,6 +22,7 @@ class Flattr_PostMeta
 	
 		add_post_meta($id, '_flattr_post_language', $_POST['flattr_post_language'], true) or update_post_meta($id, '_flattr_post_language', $_POST['flattr_post_language']);
 		add_post_meta($id, '_flattr_post_category', $_POST['flattr_post_category'], true) or update_post_meta($id, '_flattr_post_category', $_POST['flattr_post_category']);
+		add_post_meta($id, '_flattr_post_hidden',	$_POST['flattr_post_hidden'],	true) or update_post_meta($id, '_flattr_post_hidden',	$_POST['flattr_post_hidden']);
 		add_post_meta($id, '_flattr_btn_disabled',  $_POST['flattr_btn_disabled'],  true) or update_post_meta($id, '_flattr_btn_disabled',  $_POST['flattr_btn_disabled']);
 		
 		return true;
@@ -60,17 +61,27 @@ class Flattr_PostMeta
 		global $post;
 		
 		$selectedLanguage = get_post_meta($post->ID, '_flattr_post_language', true);
-		$selectedCategory = get_post_meta($post->ID, '_flattr_post_category', true);
-		$btnDisabled = get_post_meta($post->ID, '_flattr_btn_disabled', true);
-		
-		if (!$selectedLanguage)
+		if (empty($selectedLanguage))
 		{
 			$selectedLanguage = get_option('flattr_lng');
 		}
-		
-		if (!$selectedCategory)
+
+		$selectedCategory = get_post_meta($post->ID, '_flattr_post_category', true);
+		if (empty($selectedCategory))
 		{
 			$selectedCategory = get_option('flattr_cat');
+		}
+
+		$hidden = get_post_meta($post->ID, '_flattr_post_hidden',	true);
+		if ($hidden == '')
+		{
+			$hidden = get_option('flattr_hide', 0);
+		}
+
+		$btnDisabled = get_post_meta($post->ID, '_flattr_btn_disabled',	true);
+		if (empty($btnDisabled))
+		{
+			$btnDisabled = get_option('flattr_disable', 0);
 		}
 		
 		include('postmeta-template.php');

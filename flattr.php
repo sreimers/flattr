@@ -3,15 +3,17 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.8
+Version: 0.9
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 class Flattr
 {
-	const WP_VERSION = '0.8';
-	const WP_SCRIPT = 'http://api.flattr.com/button/load.js';
+	const VERSION = '0.9';
+	const WP_MIN_VER = '2.9';
+	const PHP_MIN_VER = '5.0.0';
+	const API_SCRIPT  = 'http://api.flattr.local/button/load.js?v=0.2';
 
 	/** @var array */
 	protected static $categories = array('text', 'images', 'audio', 'video', 'software', 'rest');
@@ -23,10 +25,18 @@ class Flattr
 	/** @var Flattr_Settings */
 	protected $settings;
 
+	/** @var String */
+	protected $basePath;
+
 	public function __construct()
-	{
+	{	
 		if (is_admin())
 		{
+			if (!$this->compatibilityCheck())
+			{
+				return;
+			}
+			
 			$this->init();
 		}
 		
@@ -39,6 +49,49 @@ class Flattr
 		}
 	}
 	
+	protected function addAdminNoticeMessage($msg)
+	{
+		if (!isset($this->adminNoticeMessages))
+		{
+			$this->adminNoticeMessages = array();
+			add_action( 'admin_notices', array(&$this, 'adminNotice') );
+		}
+		
+		$this->adminNoticeMessages[] = $msg;
+	}
+	
+	public function adminNotice()
+	{
+		echo '<div id="message" class="error">';
+		
+		foreach($this->adminNoticeMessages as $msg)
+		{
+			echo "<p>{$msg}</p>";
+		}
+		
+		echo '</div>';
+	}
+
+	protected function compatibilityCheck()
+	{
+		global $wp_version;
+		
+		if (version_compare(PHP_VERSION, self::PHP_MIN_VER, '<'))
+		{
+			$this->addAdminNoticeMessage('<strong>Warning:</strong> The Flattr plugin requires PHP5. You are currently using '. PHP_VERSION);
+  			add_action( 'admin_notices', array(&$this, 'adminNotice') );
+			return false;
+		}
+		
+		if (version_compare($wp_version, self::WP_MIN_VER, '<'))
+		{
+			$this->addAdminNoticeMessage('<strong>Warning:</strong> The Flattr plugin requires WordPress '. self::WP_MIN_VER .' or later. You are currently using '. $wp_version);
+			return false;
+		}
+		
+		return true;
+	}
+
 	public function filterFulHack1($content)
 	{
 		remove_filter("the_content", array($this, 'injectIntoTheContent'));
@@ -51,61 +104,108 @@ class Flattr
 		return $content;
 	}
 	
+	public function getBasePath()
+	{
+		if (!isset($this->basePath))
+		{
+			$this->basePath = WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/';
+		}
+		
+		return $this->basePath;
+	}
+
 	public function getButton()
 	{
 		global $post;
-		
+
 		if (get_post_meta($post->ID, '_flattr_btn_disabled', true))
 		{
 			return '';
 		}
-		
-		$uid = get_option('flattr_uid');
-		
+
 		$selectedLanguage = get_post_meta($post->ID, '_flattr_post_language', true);
-		$selectedCategory = get_post_meta($post->ID, '_flattr_post_category', true);
-	
-		if (!$selectedLanguage)
-		{
-			$selectedLanguage = get_option('flattr_lng');
-		}
-		
-		if (!$selectedCategory)
+		if (empty($selectedCategory))
 		{
 			$selectedCategory = get_option('flattr_cat');
 		}
-	
-		if (strlen($uid) && strlen($selectedCategory) && strlen($selectedLanguage))
+
+		$selectedCategory = get_post_meta($post->ID, '_flattr_post_category', true);
+		if (empty($selectedCategory))
 		{
-			return $this->getButtonCode($uid, $selectedCategory, get_the_title(), $this->getExcerpt(), strip_tags(get_the_tag_list('', ',', '')), get_permalink(), $selectedLanguage );
+			$selectedCategory = get_option('flattr_cat');
+		}
+
+		$hidden = get_post_meta($post->ID, '_flattr_post_hidden', true);
+		if ($hidden == '')
+		{
+			$hidden = get_option('flattr_hide', false);
+		}
+
+		$buttonData = array(
+
+			'user_id'	=> get_option('flattr_uid'),
+			'url'		=> get_permalink(),
+			'compact'	=> ( get_option('flattr_compact', false) ? true : false ),
+			'hide'		=> $hidden,
+			'language'	=> $selectedLanguage,
+			'category'	=> $selectedCategory,
+			'title'		=> get_the_title(),
+			'body'		=> $this->getExcerpt(),
+			'tag'		=> strip_tags(get_the_tag_list('', ',', ''))
+
+		);
+
+		if (isset($buttonData['user_id'], $buttonData['url'], $buttonData['language'], $buttonData['category']))
+		{
+			return $this->getButtonCode($buttonData);
 		}
 	}
-	
-	protected function getButtonCode($userID, $category, $title, $description, $tags, $url, $language)
+
+	protected function getButtonCode($params)
 	{
 		$cleaner = create_function('$expression', "return trim(preg_replace('~\r\n|\r|\n~', ' ', addslashes(\$expression)));");
 
 		$output = "<script type=\"text/javascript\">\n";
-		$output .= "var flattr_wp_ver = '" . Flattr::WP_VERSION  . "';\n";
-		$output .= "var flattr_uid = '" . $cleaner($userID)      . "';\n";
-		$output .= "var flattr_url = '" . $cleaner($url)         . "';\n";
-		$output .= "var flattr_lng = '" . $cleaner($language)    . "';\n";
-		$output .= "var flattr_cat = '" . $cleaner($category)    . "';\n";
-		if($tags) { $output .= "var flattr_tag = '". $cleaner($tags) ."';\n"; }
-		if (get_option('flattr_compact', false)) { $output .= "var flattr_btn = 'compact';\n"; }
-		$output .= "var flattr_tle = '". $cleaner($title) ."';\n";
-		$output .= "var flattr_dsc = '". $cleaner($description) ."';\n";
+		$output .= "var flattr_wp_ver = '" . self::VERSION  . "';\n";
+		$output .= "var flattr_uid = '" . $cleaner($params['user_id'])      . "';\n";
+		$output .= "var flattr_url = '" . $cleaner($params['url'])         . "';\n";
+
+		if ($params['compact'])
+		{
+			$output .= "var flattr_btn = 'compact';\n";
+		}
+		
+		if ($params['hide'])
+		{
+			$output .= "var flattr_hide = 1;\n";
+		}
+		else
+		{
+			$output .= "var flattr_hide = 0;\n";
+		}
+
+		$output .= "var flattr_lng = '" . $cleaner($params['language'])    . "';\n";
+		$output .= "var flattr_cat = '" . $cleaner($params['category'])    . "';\n";
+
+		$output .= "var flattr_tle = '". $cleaner($params['title']) ."';\n";
+		$output .= "var flattr_dsc = '". $cleaner($params['body']) ."';\n";
+
+		if ($tags)
+		{
+			$output .= "var flattr_tag = '". $cleaner($params['tags']) ."';\n";
+		}
+
 		$output .= "</script>\n";
-		$output .= '<script src="' . Flattr::WP_SCRIPT . '" type="text/javascript"></script>';
+		$output .= '<script src="' . self::API_SCRIPT . '" type="text/javascript"></script>';
 		
 		return $output;
 	}
-	
+
 	public static function getCategories()
 	{
 		return self::$categories;
 	}
-	
+
 	protected function getExcerpt($excerpt_max_length = 1024)
 	{
 		global $post;
@@ -131,16 +231,16 @@ class Flattr
 				$excerpt = substr($excerpt, 0, $pos);
 			}
 		}
-	
+
 		// If excerpt still too long
-		if ( strlen($excerpt) > $excerpt_max_length )
+		if (strlen($excerpt) > $excerpt_max_length)
 		{
 			$excerpt = substr($excerpt, 0, $excerpt_max_length);
 		}
-		
+
 		return $excerpt;
 	}
-	
+
 	public static function getInstance()
 	{
 		if (!self::$instance)
@@ -155,7 +255,7 @@ class Flattr
 	{
 		if (!isset(self::$languages))
 		{
-			include('languages.php');
+			include(Flattr::getInstance()->getBasePath() . 'languages.php');
 			self::$languages = $languages;
 		}
 		
@@ -166,13 +266,13 @@ class Flattr
 	{
 		if (!$this->settings)
 		{
-			require_once('settings.php');
+			require_once($this->getBasePath() . 'settings.php');
 			$this->settings = new Flattr_Settings();
 		}
 		
 		if (!$this->postMetaHandler)
 		{
-			require_once('postmeta.php');
+			require_once($this->getBasePath() . 'postmeta.php');
 			$this->postMetaHandler = new Flattr_PostMeta();
 		}
 	}
@@ -180,7 +280,7 @@ class Flattr
 	public function injectIntoTheContent($content)
 	{
 		return $content . $this->getButton();
-	}
+	}	
 }
 
 Flattr::getInstance();

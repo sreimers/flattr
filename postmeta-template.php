@@ -30,4 +30,12 @@
 	
 	<br />
 	
-	Disable the Flattr button on this post? <input type="checkbox" value="true" name="flattr_btn_disabled" <?php if ($btnDisabled) { echo 'checked="checked"'; } ?>/>
+	<input type="hidden" value="0" name="flattr_post_hidden" />
+	<input type="checkbox" value="1" name="flattr_post_hidden" <?php if ((bool)$hidden) { echo 'checked="checked"'; } ?>/>
+	Hide post from listings on flattr.com
+	
+	<br />
+	<!--
+	<input type="checkbox" value="1" name="flattr_btn_disabled" <?php if ((bool)$btnDisabled) { echo 'checked="checked"'; } ?>/>
+	Disable the Flattr button on this post?
+	-->
