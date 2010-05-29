@@ -35,6 +35,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.2 =
+* fixed the url to load.js.
+
 = 0.9 =
 * Fixed a bug where including files would sometimes break other plugins.
 * Will now give error if the plugin isn't compatible with the installed version of WordPress or PHP.
