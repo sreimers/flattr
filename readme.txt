@@ -35,6 +35,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.3 =
+* fixed language bug. Sorry about the frequent updates :)
+
 = 0.9.2 =
 * fixed the url to load.js.
 
