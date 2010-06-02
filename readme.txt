@@ -35,6 +35,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.5 =
+* Flattr button is no longer added to rss feeds.
+
 = 0.9.4 =
 * fixed option to disable button for pages.
 
@@ -73,6 +76,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 * First public version
 
 == Upgrade Notice ==
+
+= 0.9.5 =
+Upgrade to get rid of flattr buttons from your rss feeds
 
 = 0.9.4 =
 Upgrade to be able to disable button for pages

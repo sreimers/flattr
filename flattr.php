@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.4
+Version: 0.9.5
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 class Flattr
 {
-	const VERSION = '0.9.4';
+	const VERSION = '0.9.5';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'http://api.flattr.com/button/load.js?v=0.2';
@@ -117,7 +117,7 @@ class Flattr
 	{
 		global $post;
 
-		if ( ($post->post_type == 'page' && get_option('flattr_aut_page', 'off') != 'on') || ($post->post_type != 'page' && get_option('flattr_aut', 'off') != 'on') )
+		if ( ($post->post_type == 'page' && get_option('flattr_aut_page', 'off') != 'on') || ($post->post_type != 'page' && get_option('flattr_aut', 'off') != 'on') || is_feed() )
 		{
 			return '';
 		}
