@@ -63,8 +63,13 @@
 				</tr>
 				
 				<tr valign="top">
-					<th scope="row"><?php _e('Insert Flattr button automagically'); ?></th>
+					<th scope="row"><?php _e('Insert Flattr button into posts automagically'); ?></th>
 					<td><input <?php if (get_option('flattr_aut', 'off') == 'on') { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_aut" value="on" /><br />(uncheck this if you would rather use <code>&lt;?php the_flattr_permalink() ?&gt;</code>)</td>
+				</tr>
+
+				<tr valign="top">
+					<th scope="row"><?php _e('Insert Flattr button into pages automagically'); ?></th>
+					<td><input <?php if (get_option('flattr_aut_page', 'off') == 'on') { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_aut_page" value="on" /><br />(uncheck this if you would rather use <code>&lt;?php the_flattr_permalink() ?&gt;</code>)</td>
 				</tr>
 			</table>
 			

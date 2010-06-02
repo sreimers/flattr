@@ -17,6 +17,7 @@ class Flattr_Settings
     {
 		register_setting('flattr-settings-group', 'flattr_uid', 	array($this, 'validate_userid'));
 		register_setting('flattr-settings-group', 'flattr_aut',		array($this, 'validate_auto'));
+		register_setting('flattr-settings-group', 'flattr_aut_page',		array($this, 'validate_auto_page'));
 		register_setting('flattr-settings-group', 'flattr_cat', 	array($this, 'validate_category'));
 		register_setting('flattr-settings-group', 'flattr_lng',		array($this, 'validate_language'));
 		register_setting('flattr-settings-group', 'flattr_compact', array($this, 'validate_checkbox'));
@@ -44,6 +45,11 @@ class Flattr_Settings
     }
     
     public function validate_auto($input)
+    {
+        return ($input == 'on' ? 'on' : '');
+    }
+
+    public function validate_auto_page($input)
     {
         return ($input == 'on' ? 'on' : '');
     }

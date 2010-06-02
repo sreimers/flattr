@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.3
+Version: 0.9.4
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 class Flattr
 {
-	const VERSION = '0.9.3';
+	const VERSION = '0.9.4';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'http://api.flattr.com/button/load.js?v=0.2';
@@ -39,8 +39,7 @@ class Flattr
 			
 			$this->init();
 		}
-		
-		if (get_option('flattr_aut', 'off') == 'on')
+		if ( get_option('flattr_aut', 'off') == 'on' || get_option('flattr_aut_page', 'off') == 'on' )
 		{
 			remove_filter('get_the_excerpt', 'wp_trim_excerpt');
 			add_filter('get_the_excerpt', array($this, 'filterFulHack1'), 9);
@@ -117,6 +116,11 @@ class Flattr
 	public function getButton()
 	{
 		global $post;
+
+		if ( ($post->post_type == 'page' && get_option('flattr_aut_page', 'off') != 'on') || ($post->post_type != 'page' && get_option('flattr_aut', 'off') != 'on') )
+		{
+			return '';
+		}
 
 		if (get_post_meta($post->ID, '_flattr_btn_disabled', true))
 		{
