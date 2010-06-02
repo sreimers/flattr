@@ -3,7 +3,7 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.5
+Version: 0.9.6
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
@@ -39,13 +39,10 @@ class Flattr
 			
 			$this->init();
 		}
-		if ( get_option('flattr_aut', 'off') == 'on' || get_option('flattr_aut_page', 'off') == 'on' )
-		{
-			remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-			add_filter('get_the_excerpt', array($this, 'filterFulHack1'), 9);
-			add_filter('get_the_excerpt', array($this, 'filterFulHack2'), 11);
-			add_filter('the_content', array($this, 'injectIntoTheContent')); 
-		}
+		remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+		add_filter('get_the_excerpt', array($this, 'filterFulHack1'), 9);
+		add_filter('get_the_excerpt', array($this, 'filterFulHack2'), 11);
+		add_filter('the_content', array($this, 'injectIntoTheContent')); 
 	}
 	
 	protected function addAdminNoticeMessage($msg)
@@ -113,11 +110,11 @@ class Flattr
 		return $this->basePath;
 	}
 
-	public function getButton()
+	public function getButton($skipOptionCheck = false)
 	{
 		global $post;
 
-		if ( ($post->post_type == 'page' && get_option('flattr_aut_page', 'off') != 'on') || ($post->post_type != 'page' && get_option('flattr_aut', 'off') != 'on') || is_feed() )
+		if ( ! $skipOptionCheck && ( ($post->post_type == 'page' && get_option('flattr_aut_page', 'off') != 'on') || ($post->post_type != 'page' && get_option('flattr_aut', 'off') != 'on') || is_feed() ) )
 		{
 			return '';
 		}
@@ -295,7 +292,7 @@ Flattr::getInstance();
  */
 function get_the_flattr_permalink()
 {
-	return Flattr::getInstance()->getButton();
+	return Flattr::getInstance()->getButton(true);
 }
 
 /**

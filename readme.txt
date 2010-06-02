@@ -35,6 +35,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.6 =
+* Button didn't show up when using manual calls from templates.
+
 = 0.9.5 =
 * Flattr button is no longer added to rss feeds.
 
@@ -76,6 +79,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 * First public version
 
 == Upgrade Notice ==
+
+= 0.9.6 =
+Upgrade if using manual the_flattr_permalink() calls.
 
 = 0.9.5 =
 Upgrade to get rid of flattr buttons from your rss feeds
