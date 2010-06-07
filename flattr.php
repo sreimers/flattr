@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.6
+Version: 0.9.8
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 class Flattr
 {
-	const VERSION = '0.9.5';
+	const VERSION = '0.9.8';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'http://api.flattr.com/button/load.js?v=0.2';
@@ -191,9 +191,9 @@ class Flattr
 		$output .= "var flattr_tle = '". $cleaner($params['title']) ."';\n";
 		$output .= "var flattr_dsc = '". $cleaner($params['body']) ."';\n";
 
-		if ($tags)
+		if ($params['tag'])
 		{
-			$output .= "var flattr_tag = '". $cleaner($params['tags']) ."';\n";
+			$output .= "var flattr_tag = '". $cleaner($params['tag']) ."';\n";
 		}
 
 		$output .= "</script>\n";
