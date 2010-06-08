@@ -35,6 +35,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.9 =
+Fixed empty excerpts
+
 = 0.9.8 =
 Fixed tags
 
@@ -85,6 +88,9 @@ Fixed tags
 * First public version
 
 == Upgrade Notice ==
+
+= 0.9.9 =
+Fixed empty excerpts
 
 = 0.9.8 =
 Fixed tags

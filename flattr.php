@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.8
+Version: 0.9.9
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 class Flattr
 {
-	const VERSION = '0.9.8';
+	const VERSION = '0.9.9';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'http://api.flattr.com/button/load.js?v=0.2';
@@ -39,10 +39,7 @@ class Flattr
 			
 			$this->init();
 		}
-		remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-		add_filter('get_the_excerpt', array($this, 'filterFulHack1'), 9);
-		add_filter('get_the_excerpt', array($this, 'filterFulHack2'), 11);
-		add_filter('the_content', array($this, 'injectIntoTheContent')); 
+		add_filter('the_content', array($this, 'injectIntoTheContent'),11); 
 	}
 	
 	protected function addAdminNoticeMessage($msg)
@@ -88,18 +85,6 @@ class Flattr
 		return true;
 	}
 
-	public function filterFulHack1($content)
-	{
-		remove_filter("the_content", array($this, 'injectIntoTheContent'));
-		return $content;
-	}
-	
-	public function filterFulHack2($content)
-	{
-		add_filter("the_content", array($this, 'injectIntoTheContent'));
-		return $content;
-	}
-	
 	public function getBasePath()
 	{
 		if (!isset($this->basePath))
