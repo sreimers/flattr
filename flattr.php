@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.9
+Version: 0.9.10
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 class Flattr
 {
-	const VERSION = '0.9.9';
+	const VERSION = '0.9.10';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'http://api.flattr.com/button/load.js?v=0.2';
@@ -39,7 +39,9 @@ class Flattr
 			
 			$this->init();
 		}
+		remove_filter('get_the_excerpt', 'wp_trim_excerpt');
 		add_filter('the_content', array($this, 'injectIntoTheContent'),11); 
+		add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
 	}
 	
 	protected function addAdminNoticeMessage($msg)
@@ -192,7 +194,12 @@ class Flattr
 		return self::$categories;
 	}
 
-	protected function getExcerpt($excerpt_max_length = 1024)
+	public static function filterGetExcerpt($content)
+	{
+		return self::getExcerpt(1024);
+	}
+
+	public static function getExcerpt($excerpt_max_length = 1024)
 	{
 		global $post;
 		
@@ -261,6 +268,12 @@ class Flattr
 			require_once($this->getBasePath() . 'postmeta.php');
 			$this->postMetaHandler = new Flattr_PostMeta();
 		}
+	}
+
+	public function setExcerpt($content)
+	{
+		global $post;
+		return $post->post_content;
 	}
 	
 	public function injectIntoTheContent($content)

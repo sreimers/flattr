@@ -35,6 +35,11 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.10 =
+Yet another excerpt fix
+Added ability to exclude button from a single post/page
+Added flattr settings to pages
+
 = 0.9.9 =
 Fixed empty excerpts
 

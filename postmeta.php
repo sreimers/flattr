@@ -33,10 +33,12 @@ class Flattr_PostMeta
 		if ( function_exists('add_meta_box') )
 		{
 			add_meta_box('flattr_post_settings', __('Flattr settings'), array($this, 'inner_meta_box'), 'post', 'advanced');
+			add_meta_box('flattr_post_settings', __('Flattr settings'), array($this, 'inner_meta_box'), 'page', 'advanced');
 		}
 		else
 		{
 			add_action('dbx_post_advanced', array($this, 'old_meta_box'));
+			add_action('dbx_page_advanced', array($this, 'old_meta_box'));
 		}
 	}
 	

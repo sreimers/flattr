@@ -1,3 +1,7 @@
+	<input type="checkbox" value="1" name="flattr_btn_disabled" <?php if ((bool)$btnDisabled) { echo 'checked="checked"'; } ?>/>
+	Disable the Flattr button on this post?
+	<br />
+
 	<label for="flattr_post_language"><?php echo __('Language:') ?></label>
 	<select name="flattr_post_language" id="flattr_post_language">
 	<?php
@@ -35,7 +39,3 @@
 	Hide post from listings on flattr.com
 	
 	<br />
-	<!--
-	<input type="checkbox" value="1" name="flattr_btn_disabled" <?php if ((bool)$btnDisabled) { echo 'checked="checked"'; } ?>/>
-	Disable the Flattr button on this post?
-	-->
