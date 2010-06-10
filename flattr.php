@@ -3,14 +3,14 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.10
+Version: 0.9.11
 Author: Flattr.com
 Author URI: http://flattr.com/
 */
 
 class Flattr
 {
-	const VERSION = '0.9.10';
+	const VERSION = '0.9.11';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'http://api.flattr.com/button/load.js?v=0.2';
@@ -39,11 +39,13 @@ class Flattr
 			
 			$this->init();
 		}
-		remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-		add_filter('the_content', array($this, 'injectIntoTheContent'),11); 
-		add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
+		if ( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' )
+		{
+			remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+			add_filter('the_content', array($this, 'injectIntoTheContent'),11); 
+			add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
+		}
 	}
-	
 	protected function addAdminNoticeMessage($msg)
 	{
 		if (!isset($this->adminNoticeMessages))
@@ -196,7 +198,10 @@ class Flattr
 
 	public static function filterGetExcerpt($content)
 	{
-		return self::getExcerpt(1024);
+                $excerpt_length = apply_filters('excerpt_length', 55);
+                $excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
+
+		return self::getExcerpt($excerpt_length) . $excerpt_more;
 	}
 
 	public static function getExcerpt($excerpt_max_length = 1024)

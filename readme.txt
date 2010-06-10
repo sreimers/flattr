@@ -35,6 +35,10 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.11 =
+Excerpt length fixed
+When auto inject into posts or pages are not selected, don't add the filter
+
 = 0.9.10 =
 Yet another excerpt fix
 Added ability to exclude button from a single post/page
