@@ -35,6 +35,9 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.13 =
+Escaping of quotation marks in tags and title. Tags are now stripped from titles.
+
 = 0.9.12 =
 The plugin now uses the ver 0.5 of the JS API.
 

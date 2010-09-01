@@ -3,7 +3,7 @@
 Plugin Name: Flattr
 Plugin URI: http://flattr.com/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.12
+Version: 0.9.13
 Author: Flattr.com
 Author URI: http://flattr.com/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -11,7 +11,7 @@ License: This code is (un)licensed under the kopimi (copyme) non-license; http:/
 
 class Flattr
 {
-	const VERSION = '0.9.12';
+	const VERSION = '0.9.13';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'https://api.flattr.com/js/0.5.0/load.js?mode=auto';
@@ -143,7 +143,7 @@ class Flattr
 			'hide'		=> $hidden,
 			'language'	=> $selectedLanguage,
 			'category'	=> $selectedCategory,
-			'title'		=> get_the_title(),
+			'title'		=> strip_tags(get_the_title()),
 			'body'		=> strip_tags(preg_replace('/\<br\s*\/?\>/i', "\n", $this->getExcerpt())),
 			'tag'		=> strip_tags(get_the_tag_list('', ',', ''))
 
@@ -165,7 +165,7 @@ class Flattr
 
 		if (!empty($params['tag']))
 		{
-			$rev .= 'tags:'. $params['tag'] .';';
+			$rev .= 'tags:'. addslashes($params['tag']) .';';
 		}
 
 		if ($params['hide'])
@@ -190,7 +190,7 @@ class Flattr
 
 		return sprintf('<a class="FlattrButton" style="display:none;" href="%s" title="%s" rev="%s">%s</a>',
 			$params['url'],
-			$params['title'],
+			addslashes($params['title']),
 			$rev,
 			$params['body']
 		);
