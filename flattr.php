@@ -11,7 +11,7 @@ License: This code is (un)licensed under the kopimi (copyme) non-license; http:/
 
 class Flattr
 {
-	const VERSION = '0.9.13';
+	const VERSION = '0.9.14';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'https://api.flattr.com/js/0.5.0/load.js?mode=auto';
@@ -117,6 +117,11 @@ class Flattr
 			return '';
 		}
 
+		$flattr_uid = get_option('flattr_uid');
+		if (!$flattr_uid) {
+			return '';
+		}
+
 		$selectedLanguage = get_post_meta($post->ID, '_flattr_post_language', true);
 		if (empty($selectedLanguage))
 		{
@@ -137,7 +142,7 @@ class Flattr
 
 		$buttonData = array(
 
-			'user_id'	=> get_option('flattr_uid'),
+			'user_id'	=> $flattr_uid,
 			'url'		=> get_permalink(),
 			'compact'	=> ( get_option('flattr_compact', false) ? true : false ),
 			'hide'		=> $hidden,
@@ -290,7 +295,13 @@ class Flattr
 	
 	public function injectIntoTheContent($content)
 	{
-		return $content . $this->getButton();
+		if ( get_option('flattr_top', false) ) {
+			$result = $this->getButton() . $content;
+		}
+		else {
+			$result = $content . $this->getButton();
+		}
+		return $result;
 	}	
 }
 
