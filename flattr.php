@@ -3,7 +3,7 @@
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.14
+Version: 0.9.15
 Author: Flattr.com
 Author URI: http://flattr.com/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -11,7 +11,7 @@ License: This code is (un)licensed under the kopimi (copyme) non-license; http:/
 
 class Flattr
 {
-	const VERSION = '0.9.14';
+	const VERSION = '0.9.15';
 	const WP_MIN_VER = '2.9';
 	const PHP_MIN_VER = '5.0.0';
 	const API_SCRIPT  = 'https://api.flattr.com/js/0.5.0/load.js?mode=auto';
@@ -45,11 +45,20 @@ class Flattr
 			remove_filter('get_the_excerpt', 'wp_trim_excerpt');
 			add_filter('the_content', array($this, 'injectIntoTheContent'),11);
 			add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
+			if ( get_option('flattr_override_sharethis', 'false') == 'true' ) {
+				add_action('plugins_loaded', array($this, 'overrideShareThis'));
+			}
 		}
 
 		wp_enqueue_script('flattrscript', self::API_SCRIPT);		
 	}
-	
+
+	function overrideShareThis() {
+		if ( remove_filter('the_content', 'st_add_widget') || remove_filter('the_excerpt', 'st_add_widget') ) {
+			add_filter('flattr_button', array($this, 'overrideShareThisFilter'));
+		}
+	}
+
 	protected function addAdminNoticeMessage($msg)
 	{
 		if (!isset($this->adminNoticeMessages))
@@ -293,14 +302,29 @@ class Flattr
 		return $post->post_content;
 	}
 	
+	public function overrideShareThisFilter($button) {
+		$sharethis_buttons = '';
+		if ( (is_page() && get_option('st_add_to_page') != 'no') || (!is_page() && get_option('st_add_to_content') != 'no') ) {
+			if (!is_feed() && function_exists('st_makeEntries')) {
+				$sharethis_buttons = st_makeEntries();
+			}
+		}
+		return $sharethis_buttons . ' <style>.wp-flattr-button iframe{vertical-align:text-bottom}</style>' . $button;
+	}
+
 	public function injectIntoTheContent($content)
 	{
+		$button = $this->getButton();
+
+		$button = '<p class="wp-flattr-button">' . apply_filters('flattr_button', $button) . '</p>';
+
 		if ( get_option('flattr_top', false) ) {
-			$result = $this->getButton() . $content;
+			$result = $button . $content;
 		}
 		else {
-			$result = $content . $this->getButton();
+			$result = $content . $button;
 		}
+
 		return $result;
 	}	
 }
