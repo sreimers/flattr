@@ -1,5 +1,6 @@
 === Flattr ===
 Contributors: aphex3k
+Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
 Requires at least: 2.9.0
 Tested up to: 3.0.4
