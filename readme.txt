@@ -1,8 +1,8 @@
 === Flattr ===
-Contributors: flattr.com
+Contributors: aphex3k
 Tags: flattr, donate, micropayments
 Requires at least: 2.9.0
-Tested up to: 3.0.1
+Tested up to: 3.0.4
 Stable tag: trunk
 
 This plugin allows you to easily add a Flattr button to your wordpress blog.
@@ -168,7 +168,6 @@ Upgrade notices describe the reason a user should upgrade.  No more than 300 cha
 
 == Support ==
 
-Direct support: https://flattr.com/support/contact
-IRC: #flattr on Freequest 
-Forum: http://forum.flattr.com/
-Twitter: Twitter to #flattr and the community or a friendly developer might help you.
+For support requests regarding the wordpress plugin, please visit the plugin support forum: http://wordpress.org/tags/flattr?forum_id=10
+
+For every other Flattr support request head over to the Flattr forum: http://forum.flattr.com/
