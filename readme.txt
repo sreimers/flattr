@@ -36,6 +36,11 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
+= 0.9.20 =
+* plugin programmer changed `;)`
+* adressing the borked excerpt behaviour
+* Flattr plugins dashboard pages are moved to a seperate submenu
+
 = 0.9.19 =
 Dont show Flattr button on password protected posts until the password has been accepted.
 

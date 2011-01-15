@@ -2,7 +2,7 @@
 
 class Flattr
 {
-	const VERSION = '0.9.19';
+	const VERSION = '0.9.20';
 	const WP_MIN_VER = '2.9';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
@@ -200,13 +200,13 @@ class Flattr
 
 	public static function filterGetExcerpt($content)
 	{
-        $excerpt_length = apply_filters('excerpt_length', 55);
-        $excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
+            $excerpt_length = apply_filters('excerpt_length', 55);
+            $excerpt_more = apply_filters('excerpt_more', ' ' . '[...]');
 
-		return self::getExcerpt($excerpt_length) . $excerpt_more;
+            return self::getExcerpt($excerpt_length, $excerpt_more);
 	}
 
-	public static function getExcerpt($excerpt_max_length = 1024)
+	public static function getExcerpt($excerpt_max_length = 55, $excerpt_more = ' [...]')
 	{
 		global $post;
 		
@@ -223,11 +223,20 @@ class Flattr
 		// Hacks for various plugins
 		$excerpt = preg_replace('/httpvh:\/\/[^ ]+/', '', $excerpt); // hack for smartyoutube plugin
 		$excerpt = preg_replace('%httpv%', 'http', $excerpt); // hack for youtube lyte plugin
-	
+
+            $excerpt = explode(' ', $excerpt, $excerpt_max_length);
+              if ( count($excerpt) >= $excerpt_max_length) {
+                array_pop($excerpt);
+                $excerpt = implode(" ",$excerpt).' ...';
+              } else {
+                $excerpt = implode(" ",$excerpt);
+              }
+              $excerpt = preg_replace('`\[[^\]]*\]`','',$excerpt);
+
 	    // Try to shorten without breaking words
-	    if ( strlen($excerpt) > $excerpt_max_length )
+	    if ( strlen($excerpt) > 1024 )
 	    {
-			$pos = strpos($excerpt, ' ', $excerpt_max_length);
+			$pos = strpos($excerpt, ' ', 1024);
 			if ($pos !== false)
 			{
 				$excerpt = substr($excerpt, 0, $pos);
@@ -235,9 +244,9 @@ class Flattr
 		}
 
 		// If excerpt still too long
-		if (strlen($excerpt) > $excerpt_max_length)
+		if (strlen($excerpt) > 1024)
 		{
-			$excerpt = substr($excerpt, 0, $excerpt_max_length);
+			$excerpt = substr($excerpt, 0, 1024);
 		}
 
 		return $excerpt;

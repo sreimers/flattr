@@ -10,7 +10,12 @@ class Flattr_Settings
 
     public function init_ui()
     {
-        add_options_page('Flattr Setup', 'Flattr', 'manage_options', __FILE__, array($this, 'render'));
+        $menutitle = __('Flattr', 'flattr');
+	add_menu_page('Flattr',  $menutitle, 1, 'flattr/settings.php', '', get_bloginfo('wpurl') . '/wp-content/plugins/flattr'.'/img/flattr-icon_new.png');
+        
+        add_submenu_page( 'flattr/settings.php', __('Flattr'), __('Flattr'), 'manage_options', 'flattr/settings.php', array($this, 'render'));
+
+
     }
 
     public function register_settings()
