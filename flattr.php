@@ -1,9 +1,14 @@
 <?php
+/**
+ * @package Flattr
+ * @author Michael Henke
+ * @version 0.9.20
+ */
 /*
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.19
+Version: 0.9.20
 Author: Michael Henke
 Author URI: http://allesblog.de/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
