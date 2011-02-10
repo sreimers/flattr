@@ -3,7 +3,7 @@ Contributors: aphex3k
 Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
 Requires at least: 2.9.0
-Tested up to: 3.0.4
+Tested up to: 3.0.5
 Stable tag: trunk
 
 This plugin allows you to easily add a Flattr button to your wordpress blog.
@@ -23,7 +23,7 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 1. Upload the folder 'flattr' to your server in the folder '/wp-content/plugins/'
 2. Go to the WordPress control panel and find the 'Plugins' section
 3. Activate the plugin 'Flattr'
-4. Go to the 'Options' section and select 'Flattr'
+4. Go to the 'Options' section and authrize your blog against flattr.com
 5. Select your default category (which usually would be 'text' if you have a normal blog), select your default language and type in your Flattr user ID (your user ID can be found on your dashboard on http://flattr.com/ )
 6. If you want the Flattr button to be automagically included at the end of your posts, leave the checkbox checked
 7. If you want to add the Flattr button manually in your theme, uncheck the checkbox and use the following code snippet:
@@ -35,6 +35,15 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 
 == Changelog ==
+
+= 0.9.21 =
+`Attention: ` It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
+If you rely on full flattr functionality for your blog you might want to consider skipping this version.
+* The Javascript button now validates against w3c html validator. Best regards to Tim Dellas.
+* HTTP/HTTPS callback fix(?)
+* Integrate FlattRSS plugin
+* Integrate Flattr Widegt plugin
+* New Admin Dashboard with tabbed navigation
 
 = 0.9.20 =
 * plugin programmer changed `;)`
@@ -130,47 +139,10 @@ Fixed tags
 = 0.4 =
 * First public version
 
-== Upgrade Notice ==
+== Frequently Asked Questions ==
 
-= 0.9.9 =
-Fixed empty excerpts
-
-= 0.9.8 =
-Fixed tags
-
-= 0.9.7 =
-Upgrade to get auto excerpts to work for rss feeds.
-
-= 0.9.6 =
-Upgrade if using manual the_flattr_permalink() calls.
-
-= 0.9.5 =
-Upgrade to get rid of flattr buttons from your rss feeds
-
-= 0.9.4 =
-Upgrade to be able to disable button for pages
-
-= 0.9.3 =
-Upgrade to fix language problems
-
-= 0.9 =
-New goodies available. Fun for the whole family!
-
-= 0.71 =
-Short php open tags where used in some places. Upgrade if your host does not support short open tags.
-
-= 0.7 =
-Language support. Upgrade required.
-
-= 0.6 =
-Previous version didnt work with Smart YouTube when no excerpt was entered.
-
-= 0.5 =
-Previous version makes your blog posts display incorrectly if you don't enter an excerpt.
-
-= 0.4 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
+Q: I recieve an error message when trying to (re-)authorize my blog with flattr, what's wrong?
+A: Please clear session/cookie/browser cache and try again please.
 
 == Support ==
 

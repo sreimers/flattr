@@ -2,7 +2,7 @@
 
 class Flattr
 {
-	const VERSION = '0.9.20';
+	const VERSION = '0.9.21';
 	const WP_MIN_VER = '2.9';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
@@ -30,11 +30,12 @@ class Flattr
 			
 			$this->init();
 		}
-		if ( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' )
+		if (( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' ) && !in_array( 'live-blogging/live-blogging.php' , get_option('active_plugins') ))
 		{
 			remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-			add_filter('the_content', array($this, 'injectIntoTheContent'),11);
-			add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
+
+                        add_filter('the_content', array($this, 'injectIntoTheContent'),11);
+                        add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
 			if ( get_option('flattr_override_sharethis', 'false') == 'true' ) {
 				add_action('plugins_loaded', array($this, 'overrideShareThis'));
 			}
@@ -306,6 +307,9 @@ class Flattr
 
 	public function injectIntoTheContent($content)
 	{
+            global $post;
+
+            if (in_array(get_post_type(), get_option('flattr_post_types'))) {
 		$button = $this->getButton();
 
 		$button = '<p class="wp-flattr-button">' . apply_filters('flattr_button', $button) . '</p>';
@@ -320,7 +324,9 @@ class Flattr
 		{
 			return $result;
 		}
-		return $content;
+		
+            }
+            return $content;
 	}	
 }
 
@@ -342,4 +348,233 @@ function get_the_flattr_permalink()
 function the_flattr_permalink()
 {
 	echo(get_the_flattr_permalink());
+}
+
+if (file_exists(WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/flattrwidget.php')) {
+    include WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/flattrwidget.php';
+}
+
+add_action('admin_init', 'tabber_stylesheet');
+
+/*
+ * Enqueue style-file, if it exists.
+ */
+
+function tabber_stylesheet() {
+    $myStyleUrl = WP_PLUGIN_URL . '/flattr/tabber.css';
+    $myStyleFile = WP_PLUGIN_DIR . '/flattr/tabber.css';
+    if ( file_exists($myStyleFile) ) {
+        wp_register_style('myStyleSheets', $myStyleUrl);
+        wp_enqueue_style( 'myStyleSheets');
+    }
+}
+
+    if(!defined('FLATTRSS_PLUGIN_PATH')) { define(FLATTRSS_PLUGIN_PATH, get_bloginfo('wpurl') . '/wp-content/plugins/flattr'); }
+    add_option('flattrss_api_key', "");
+    add_option('flattrss_autodonate', false);
+    add_option('flattrss_api_secret', "");
+    add_option('flattrss_api_oauth_token',"");
+    add_option('flattrss_api_oauth_token_secret',"");
+    add_option('flattrss_custom_image_url', FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png');
+    add_option('flattrss_clicktrack_since_date', date("r"));
+    add_option('flattrss_clickthrough_n', 0);
+    add_option('flattrss_clicktrack_enabled', true);
+    add_option('flattrss_error_reporting', false);
+    add_option('flattrss_autosubmit', true);
+    add_option('flattr_post_types', array('post','page'));
+
+function flattr_post2rss($content) {
+    global $post;
+
+    $flattr = "";
+    $flattr_post_types = get_option('flattr_post_types');
+
+    if (is_feed() && in_array(get_post_type(), $flattr_post_types)) {
+        $id = $post->ID;
+        $md5 = md5($post->post_title);
+        $permalink = urlencode(get_permalink( $id ));
+
+        $flattr.= ' <p><a href="'. get_bloginfo('wpurl') .'/?flattrss_redirect&amp;id='.$id.'&amp;md5='.$md5.'" title="Flattr" target="_blank"><img src="'. FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png" alt="flattr this!"/></a></p>';
+    }
+    return ($content.$flattr);
+}
+
+add_filter('the_content_feed', 'flattr_post2rss',999999);
+
+function new_flattrss_autosubmit_action () {
+
+    global $call_n;
+
+    $post = $_POST;
+
+    if (($post['post_status'] == "publish") && ($post['original_post_status'] != "publish" && (strtotime($post['post_date_gmt']) - strtotime(gmdate("Y-m-d H:i:s")) <= 0)) && ($call_n == 1)) {
+
+        $e = error_reporting();
+        error_reporting(E_ERROR);
+
+        $url = get_permalink($post['ID']);
+        $tagsA = get_the_tags($post['ID']);
+        $tags = "";
+
+        if ($tagsA) {
+            foreach ($tagsA as $tag) {
+                if (strlen($tags)!=0){
+                    $tags .=",";
+                }
+                $tags .= $tag->name;
+            }
+        }
+
+        if (trim($tags) == "") {
+            $tags .= "blog";
+        }
+
+        $category = "text";
+        if (get_option('flattr_cat')!= "") {
+            $category = get_option('flattr_cat');
+        }
+
+        $language = "en_EN";
+        if (get_option('flattr_lng')!="") {
+            $language = get_option('flattr_lng');
+        }
+
+        if (!function_exists('getExcerpt')) {
+            function getExcerpt($post, $excerpt_max_length = 1024) {
+
+                $excerpt = $post['post_excerpt'];
+                if (trim($excerpt) == "") {
+                        $excerpt = $post['post_content'];
+                }
+
+                $excerpt = strip_shortcodes($excerpt);
+                $excerpt = strip_tags($excerpt);
+                $excerpt = str_replace(']]>', ']]&gt;', $excerpt);
+
+                // Hacks for various plugins
+                $excerpt = preg_replace('/httpvh:\/\/[^ ]+/', '', $excerpt); // hack for smartyoutube plugin
+                $excerpt = preg_replace('%httpv%', 'http', $excerpt); // hack for youtube lyte plugin
+
+                // Try to shorten without breaking words
+                if ( strlen($excerpt) > $excerpt_max_length ) {
+                    $pos = strpos($excerpt, ' ', $excerpt_max_length);
+                    if ($pos !== false) {
+                            $excerpt = substr($excerpt, 0, $pos);
+                    }
+                }
+
+                // If excerpt still too long
+                if (strlen($excerpt) > $excerpt_max_length) {
+                    $excerpt = substr($excerpt, 0, $excerpt_max_length);
+                }
+
+                return $excerpt;
+            }
+        }
+
+        $content = preg_replace(array('/\<br\s*\/?\>/i',"/\n/","/\r/", "/ +/"), " ", getExcerpt($post));
+        $content = strip_tags($content);
+
+        if (strlen(trim($content)) == 0) {
+            $content = "(no content provided...)";
+        }
+
+        $title = strip_tags($post['post_title']);
+        $title = str_replace(array("\"","\'"), "", $title);
+
+        $api_key = get_option('flattrss_api_key');
+        $api_secret = get_option('flattrss_api_secret');
+        $oauth_token = get_option('flattrss_api_oauth_token');
+        $oauth_token_secret = get_option('flattrss_api_oauth_token_secret');
+
+        $flattr_user = new Flattr_Rest($api_key, $api_secret, $oauth_token, $oauth_token_secret);
+
+        if ($flattr_user->error()) {
+            return;
+        }
+
+        if(!function_exists("encode")) {
+            function encode($string) {
+                if (function_exists("mb_detect_encoding")) {
+                    $string = (mb_detect_encoding($string, "UTF-8") == "UTF-8" )? $string : utf8_encode($string);
+                } else {
+                    $string = utf8_encode($string);
+                }
+                return $string;
+            }
+        }
+
+        #print_r(array($url, encode($title), $category, encode($content), $tags, $language));
+
+        $flattr_user->submitThing($url, encode($title), $category, encode($content), $tags, $language);
+
+        /*
+        if (get_option('flattrss_autodonate') && !isset($_SESSION['flattrss_autodonate_click'])) {
+            $flattr_user->clickThing("ead246fc95fc401ce69d15f3981da971");
+            $_SESSION['flattrss_autodonate_click'] = true;
+        }*/
+
+        error_reporting($e);
+    }
+    $call_n = 1;
+}
+
+if (get_option('flattrss_autosubmit')) {
+    add_action('save_post','new_flattrss_autosubmit_action',9999);
+}
+
+add_action('init', 'new_flattrss_redirect');
+add_action('admin_init', 'new_flattrss_callback');
+
+function new_flattrss_redirect() {
+    include_once 'redirect.php';
+}
+
+function new_flattrss_callback() {
+    include_once 'callback.php';
+}
+
+if(is_admin()) {
+    $admin_notice = "";
+    if (!(function_exists("curl_init"))) {
+        $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> Your PHP installation must support cURL for FlattRSS plugin to work!</p></div>\';';
+    }
+
+    $oauth_token = get_option('flattrss_api_oauth_token');
+    $oauth_token_secret = get_option('flattrss_api_oauth_token_secret');
+
+    if ($oauth_token == $oauth_token_secret) {
+
+        $opt_url = get_bloginfo('wpurl') .'/wp-admin/admin.php?page=flattrss/flattrss.php';
+
+        $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> You need to <a href="'.$opt_url.'">configure FlattRSS plugin</a> before it works properly</p></div>\';';
+    }
+
+    $active_plugins = get_option('active_plugins');
+    if ( in_array( 'live-blogging/live-blogging.php' , $active_plugins ) && ( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' ) ) {
+        $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There is an <a href="http://wordpress.org/support/topic/plugin-live-blogging-how-to-avoid-the_content-of-live_blog_entries" target="_blank">incompatibility</a> with [Liveblog] plugin and automatic Flattr button injection! Automatic injection is disabled as long as [Liveblog] plugin is enabled. You need to use the manual method to add Flattr buttons to your posts.</p></div>\';';
+    }
+
+    if (defined('LIBXML_VERSION')) {
+        if (version_compare(LIBXML_VERSION, 20632, '<')) {
+            $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There might be an <a href="http://forum.flattr.net/showthread.php?tid=681" target="_blank">incompatibility</a> with your web server running libxml '.LIBXML_VERSION.'. Flattr Plugin requieres at least 20632. You can help improve the Flattr experience for everybody, <a href="mailto:flattr@allesblog.de?subject='.rawurlencode("My webserver is running LIBXML Version ".LIBXML_VERSION).'">please contact me</a> :). See Feedback-tab for details.</p></div>\';';
+        }
+    } else {
+        $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> Your PHP installation must support <strong>libxml</strong> for FlattRSS plugin to work!</p></div>\';';
+    }
+
+    if (in_array( 'flattrss/flattrss.php' , $active_plugins)) {
+        $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> It is mandatory for <strong>FlattRSS</strong> plugin to be at least deactivated. Functionality and Settings are merged into the Flattr plugin.</p></div>\';';
+    }
+
+    if (in_array( 'flattrwidget/flattrwidget.php' , $active_plugins)) {
+        $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> It is mandatory for <strong>Flattr Widget</strong> plugin to be at least deactivated. Functionality and Settings are merged into the Flattr plugin.</p></div>\';';
+    }
+    
+    if ($admin_notice != "") {
+        add_action( 'admin_notices',
+            create_function('', $admin_notice)
+        );
+    }
+
 }

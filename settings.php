@@ -29,6 +29,14 @@ class Flattr_Settings
         register_setting('flattr-settings-group', 'flattr_hide',        array($this, 'sanitize_checkbox'));
         register_setting('flattr-settings-group', 'flattr_top',         array($this, 'sanitize_checkbox'));
         register_setting('flattr-settings-group', 'flattr_override_sharethis', array($this, 'sanitize_checkbox'));
+        register_setting('flattr-settings-group', 'flattrss_api_key');
+        register_setting('flattr-settings-group', 'flattrss_api_secret');
+        register_setting('flattr-settings-group', 'flattrss_autodonate');
+        register_setting('flattr-settings-group', 'flattrss_clicktrack_enabled');
+        register_setting('flattr-settings-group', 'flattrss_error_reporting');
+        register_setting('flattr-settings-group', 'flattrss_custom_image_url');
+        register_setting('flattr-settings-group', 'flattrss_autosubmit');
+        register_setting('flattr-settings-group', 'flattr_post_types');
     }
 
     public function render()
