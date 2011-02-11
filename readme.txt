@@ -19,6 +19,7 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 == Installation ==
 
 Note that we only support PHP 5 and WordPress 2.9 or above.
+To use advanced features like auto-submission or feed-buttons, your web server needs cURL extension installed.
 
 1. Upload the folder 'flattr' to your server in the folder '/wp-content/plugins/'
 2. Go to the WordPress control panel and find the 'Plugins' section
