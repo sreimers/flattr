@@ -38,6 +38,10 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 `Attention: ` It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
 
+= 0.9.22 =
+* Wordpress 3 MS (ex-MU) support
+* Using latest Flattr REST API 0.5
+
 = 0.9.21.1 =
 * Bugfix release
 * Reauthorizing and Reconnection working.

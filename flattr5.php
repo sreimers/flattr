@@ -1,8 +1,10 @@
 <?php
 
+if (session_id() == '') { session_start(); }
+
 class Flattr
 {
-	const VERSION = '0.9.21.1';
+	const VERSION = '0.9.22';
 	const WP_MIN_VER = '2.9';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
@@ -407,7 +409,7 @@ function new_flattrss_autosubmit_action () {
 
     $post = $_POST;
 
-    if (($post['post_status'] == "publish") && ($post['original_post_status'] != "publish" && (strtotime($post['post_date_gmt']) - strtotime(gmdate("Y-m-d H:i:s")) <= 0)) && ($call_n == 1)) {
+    if (((get_option('flattr_hide') == false) && $post['post_status'] == "publish") && ($post['original_post_status'] != "publish" && (strtotime($post['post_date_gmt']) - strtotime(gmdate("Y-m-d H:i:s")) <= 0)) && ($call_n == 1)) {
 
         $e = error_reporting();
         error_reporting(E_ERROR);
@@ -509,7 +511,7 @@ function new_flattrss_autosubmit_action () {
 
         #print_r(array($url, encode($title), $category, encode($content), $tags, $language));
 
-        $flattr_user->submitThing($url, encode($title), $category, encode($content), $tags, $language);
+        $flattr_user->submitThing($url, encode($title), $category, encode($content), $tags, $language, get_option('flattr_hide'));
 
         /*
         if (get_option('flattrss_autodonate') && !isset($_SESSION['flattrss_autodonate_click'])) {
@@ -527,7 +529,7 @@ if (get_option('flattrss_autosubmit')) {
 }
 
 add_action('init', 'new_flattrss_redirect');
-add_action('admin_init', 'new_flattrss_callback');
+add_action('init', 'new_flattrss_callback');
 
 function new_flattrss_redirect() {
     include_once 'redirect.php';
@@ -549,8 +551,8 @@ if(is_admin()) {
     }
 
     if (defined('LIBXML_VERSION')) {
-        if (version_compare(LIBXML_VERSION, 20631, '<')) {
-            $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There might be an <a href="http://forum.flattr.net/showthread.php?tid=681" target="_blank">incompatibility</a> with your web server running libxml '.LIBXML_VERSION.'. Flattr Plugin requieres at least 20631. You can help improve the Flattr experience for everybody, <a href="mailto:flattr@allesblog.de?subject='.rawurlencode("My webserver is running LIBXML Version ".LIBXML_VERSION).'">please contact me</a> :). See Feedback-tab for details.</p></div>\';';
+        if (version_compare(LIBXML_VERSION, 20627, '<')) {
+            $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There might be an <a href="http://forum.flattr.net/showthread.php?tid=681" target="_blank">incompatibility</a> with your web server running libxml '.LIBXML_VERSION.'. Flattr Plugin requieres at least 20627. You can help improve the Flattr experience for everybody, <a href="mailto:flattr@allesblog.de?subject='.rawurlencode("My webserver is running LIBXML Version ".LIBXML_VERSION).'">please contact me</a> :). See Feedback-tab for details.</p></div>\';';
         }
     } else {
         $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> Your PHP installation must support <strong>libxml</strong> for Flattr plugin to work!</p></div>\';';

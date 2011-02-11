@@ -37,6 +37,8 @@ class Flattr_Settings
         register_setting('flattr-settings-group', 'flattrss_custom_image_url');
         register_setting('flattr-settings-group', 'flattrss_autosubmit');
         register_setting('flattr-settings-group', 'flattr_post_types');
+        register_setting('flattr-settings-group', 'flattrss_api_oauth_token_secret');
+        register_setting('flattr-settings-group', 'flattrss_api_oauth_token');
     }
 
     public function render()

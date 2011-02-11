@@ -2,16 +2,8 @@
 
 if ( isset ($_REQUEST['oauth_token']) && isset ($_REQUEST['oauth_verifier'])) {
 
-    global $current_user;
-    get_currentuserinfo();
-
-    if ($current_user->user_level <  8) { //if not admin, die with message
-            wp_die( __('You are not allowed to access this part of the site') );
-    }
-
     if (session_id() == '') { session_start(); }
 
-    include_once "oAuth/oauth.php";
     include_once "oAuth/flattr_rest.php";
 
     $api_key = get_option('flattrss_api_key');
@@ -28,6 +20,8 @@ if ( isset ($_REQUEST['oauth_token']) && isset ($_REQUEST['oauth_verifier'])) {
 
         add_option('flattrss_api_oauth_token_secret', $access_token['oauth_token_secret']);
         update_option('flattrss_api_oauth_token_secret', $access_token['oauth_token_secret']);
+    } else {
+        wp_die("Callback Error.");
     }
 
     header("Status: 307");

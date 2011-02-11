@@ -1,7 +1,5 @@
 <?php
 
-    #if (session_id() == '') { session_start(); }
-
     define(FLATTRSS_PLUGIN_PATH, get_bloginfo('wpurl') . '/wp-content/plugins/flattr');
 
     include_once 'oAuth/flattr_rest.php';
@@ -16,7 +14,7 @@
             <div>
             <!-- <h2><?php _e('Flattr Settings'); ?> <img id="loaderanim" onload="javascript:{document.getElementById('loaderanim').style.display='none'};" src="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/flattr'.'/img/loader.gif' ?>"/></h2> -->
 <div class="tabber">
-    <div style="float:right; margin-top: -31px;"><img src="../wp-content/plugins/flattr/img/flattr-logo-beta-small.png"/></div>
+    <div style="float:right; margin-top: -31px;"><img src="../wp-content/plugins/flattr/img/flattr-logo-beta-small.png" alt="Flattr Beta Logo"/></div>
     <div class="tabbertab" title="Flattr Account" style="border-left:0;">
 		<h2><?php _e('Basic Setup'); ?></h2>
                 <p>
@@ -96,14 +94,11 @@
 
     $flattr = new Flattr_Rest($api_key, $api_secret);
 
-    if (!isset($_SESSION['flattrss_current_token']) || empty ($_SESSION['flattrss_current_token'])) {
+    # Do not rawurlencode!
+    $callback_ = (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ;
 
-        $token = $flattr->getRequestToken(get_bloginfo('wpurl').'/wp-admin/admin.php?page=flattr/settings.php');
-        
-        $_SESSION['flattrss_current_token'] = $token;
-    } else {
-        $token = $_SESSION['flattrss_current_token'];
-    }
+    $token = $flattr->getRequestToken( $callback_ );
+    $_SESSION['flattrss_current_token'] = $token;
 
     $url = $flattr->getAuthorizeUrl($token, 'read,readextended,click,publish');
 
@@ -111,6 +106,8 @@
         <p>In order to automatically generate the correct "<em>Things</em>" link for your blog post from the feed, you need to authorize you Flattr app with your Flattr account.</p>
           <p><a href="<?php echo $url;?>">(re-)Authorize with Flattr</a>.
 <?php
+
+                #print_r($flattr);
 
     $oauth_token = get_option('flattrss_api_oauth_token');
     $oauth_token_secret = get_option('flattrss_api_oauth_token_secret');
@@ -127,7 +124,7 @@
     <?php echo $user['username'];?>(<?php echo $user['id'];?>)</p>
     <p>Flattr: <a href="https://flattr.com/profile/<?php echo $user['username'];?>" target="_blank">Profile</a>, <a href="https://flattr.com/dashboard" target="_blank">Dashboard</a>, <a href="https://flattr.com/settings" target="_blank">Settings</a></p>
         <?php
-        #print_r($user);
+        #print_r($flattr_user);
     }
   }
 }
