@@ -98,13 +98,8 @@
 
     if (!isset($_SESSION['flattrss_current_token']) || empty ($_SESSION['flattrss_current_token'])) {
 
-        $token = "";
-        if ( class_exists('Flattr')) {
-            $token = $flattr->getRequestToken(get_bloginfo('wpurl').'/wp-admin/admin.php?page=flattrss/flattrss.php');
-        } else {
-            $token = $flattr->getRequestToken(get_bloginfo('wpurl').'/wp-admin/options-general.php?page=flattrss.php');
-        }
-
+        $token = $flattr->getRequestToken(get_bloginfo('wpurl').'/wp-admin/admin.php?page=flattr/settings.php');
+        
         $_SESSION['flattrss_current_token'] = $token;
     } else {
         $token = $_SESSION['flattrss_current_token'];

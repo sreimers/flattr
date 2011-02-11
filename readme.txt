@@ -36,9 +36,14 @@ Note that we only support PHP 5 and WordPress 2.9 or above.
 
 == Changelog ==
 
-= 0.9.21 =
 `Attention: ` It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
+
+= 0.9.21.1 =
+* Bugfix release
+* Reauthorizing and Reconnection working.
+
 If you rely on full flattr functionality for your blog you might want to consider skipping this version.
+= 0.9.21 =
 * The Javascript button now validates against w3c html validator. Best regards to Tim Dellas.
 * HTTP/HTTPS callback fix(?)
 * Integrate FlattRSS plugin

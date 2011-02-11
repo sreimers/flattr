@@ -1,5 +1,7 @@
 <?php
 
+include_once 'oauth.php';
+
 class Flattr_Rest
 {
 	public $http_header;

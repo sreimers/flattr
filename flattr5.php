@@ -2,7 +2,7 @@
 
 class Flattr
 {
-	const VERSION = '0.9.21';
+	const VERSION = '0.9.21.1';
 	const WP_MIN_VER = '2.9';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
@@ -379,7 +379,7 @@ function tabber_stylesheet() {
     add_option('flattrss_clicktrack_since_date', date("r"));
     add_option('flattrss_clickthrough_n', 0);
     add_option('flattrss_clicktrack_enabled', true);
-    add_option('flattrss_error_reporting', false);
+    add_option('flattrss_error_reporting', true);
     add_option('flattrss_autosubmit', true);
     add_option('flattr_post_types', array('post','page'));
 
@@ -487,6 +487,9 @@ function new_flattrss_autosubmit_action () {
         $oauth_token = get_option('flattrss_api_oauth_token');
         $oauth_token_secret = get_option('flattrss_api_oauth_token_secret');
 
+        if (!class_exists('Flattr_Rest')) {
+            include 'oAuth/flattr_rest.php';
+        }
         $flattr_user = new Flattr_Rest($api_key, $api_secret, $oauth_token, $oauth_token_secret);
 
         if ($flattr_user->error()) {
@@ -536,19 +539,9 @@ function new_flattrss_callback() {
 
 if(is_admin()) {
     $admin_notice = "";
-    if (!(function_exists("curl_init"))) {
-        $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> Your PHP installation must support cURL for FlattRSS plugin to work!</p></div>\';';
-    }
 
     $oauth_token = get_option('flattrss_api_oauth_token');
     $oauth_token_secret = get_option('flattrss_api_oauth_token_secret');
-
-    if ($oauth_token == $oauth_token_secret) {
-
-        $opt_url = get_bloginfo('wpurl') .'/wp-admin/admin.php?page=flattrss/flattrss.php';
-
-        $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> You need to <a href="'.$opt_url.'">configure FlattRSS plugin</a> before it works properly</p></div>\';';
-    }
 
     $active_plugins = get_option('active_plugins');
     if ( in_array( 'live-blogging/live-blogging.php' , $active_plugins ) && ( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' ) ) {
@@ -556,11 +549,11 @@ if(is_admin()) {
     }
 
     if (defined('LIBXML_VERSION')) {
-        if (version_compare(LIBXML_VERSION, 20632, '<')) {
-            $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There might be an <a href="http://forum.flattr.net/showthread.php?tid=681" target="_blank">incompatibility</a> with your web server running libxml '.LIBXML_VERSION.'. Flattr Plugin requieres at least 20632. You can help improve the Flattr experience for everybody, <a href="mailto:flattr@allesblog.de?subject='.rawurlencode("My webserver is running LIBXML Version ".LIBXML_VERSION).'">please contact me</a> :). See Feedback-tab for details.</p></div>\';';
+        if (version_compare(LIBXML_VERSION, 20631, '<')) {
+            $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There might be an <a href="http://forum.flattr.net/showthread.php?tid=681" target="_blank">incompatibility</a> with your web server running libxml '.LIBXML_VERSION.'. Flattr Plugin requieres at least 20631. You can help improve the Flattr experience for everybody, <a href="mailto:flattr@allesblog.de?subject='.rawurlencode("My webserver is running LIBXML Version ".LIBXML_VERSION).'">please contact me</a> :). See Feedback-tab for details.</p></div>\';';
         }
     } else {
-        $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> Your PHP installation must support <strong>libxml</strong> for FlattRSS plugin to work!</p></div>\';';
+        $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> Your PHP installation must support <strong>libxml</strong> for Flattr plugin to work!</p></div>\';';
     }
 
     if (in_array( 'flattrss/flattrss.php' , $active_plugins)) {
