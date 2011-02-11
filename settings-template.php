@@ -216,13 +216,20 @@
             <table>
                 <tr valign="top">
                     <th scope="row">Automatic Submission</th>
-                    <td><input name="flattrss_autosubmit" type="checkbox"<?php echo get_option('flattrss_autosubmit')? " checked": ""; echo ($oauth_token != $oauth_token_secret)? "":"disabled"; ?> /><br/>
-                        <p>Check this box to automatically submit your blog post when you publish.</p>
+                    <td><p><input name="flattrss_autosubmit" type="checkbox"<?php echo get_option('flattrss_autosubmit')? " checked": ""; echo ($oauth_token != $oauth_token_secret && get_option('flattr_hide') == false)? "":" disabled"; ?> />&nbsp;Check this box to automatically submit your blog post when you publish. You need to complete the full advanced setup in order for autosubmission to work.</p>
                     </td>
                 </tr>
                 <tr valign="top">
+                    <th scope="row">Suppress Warnings</th>
+                    <td><p><input name="flattrss_error_reporting" type="checkbox"<?php echo get_option('flattrss_error_reporting')? " checked": "" ?>/>&nbsp;This is an advanced option for supression of error messages upon redirect from feed to thing. Use with caution, as flattr things might be submitted incomplete. Incomplete things are subject to be hidden on the flattr homepage!<br>If in doubt, leave disabled.</p>
+                    </td>
+                </tr>
+            </table>
+            <h2>Feed Settings</h2>
+            <table>
+                <tr valign="top">
                 <th scope="row">Custom Image URL</th>
-                <td><input name="flattrss_custom_image_url" size="70" value="<?php echo get_option('flattrss_custom_image_url');?>"/><br/>
+                <td><p>This image is served as static image to be included in the RSS/Atom Feed of your blog.</p><input name="flattrss_custom_image_url" size="70" value="<?php echo get_option('flattrss_custom_image_url');?>"/><br/>
                     <?php if ( get_option('flattrss_custom_image_url') != FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png') { ?>
                     Default Value:<br>
                     <input size="70" value="<?php echo FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png';?>" readonly><br />
@@ -231,12 +238,6 @@
                     <img src="<?php echo get_option('flattrss_custom_image_url');?>">
                     <p></p>
                 </td>
-                </tr>
-                <tr valign="top">
-                    <th scope="row">Suppress Warnings</th>
-                    <td><input name="flattrss_error_reporting" type="checkbox"<?php echo get_option('flattrss_error_reporting')? " checked": "" ?>/><br/>
-                        <p>This is an advanced option for supression of error messages upon redirect from feed to thing. Use with caution, as flattr things might be submitted incomplete. Incomplete things are subject to be hidden on the flattr homepage!<br>If in doubt, leave disabled.</p>
-                    </td>
                 </tr>
             </table>
     </div>
