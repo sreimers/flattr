@@ -401,8 +401,9 @@ function flattr_post2rss($content) {
     return ($content.$flattr);
 }
 
-add_filter('the_content_feed', 'flattr_post2rss',999999);
-
+if(function_exists('curl_init')) {
+    add_filter('the_content_feed', 'flattr_post2rss',999999);
+}
 function new_flattrss_autosubmit_action () {
 
     global $call_n;
