@@ -210,6 +210,10 @@
     </div>
     <div class="tabbertab">
             <h2>Advanced Settings</h2>
+            <?php if (!function_exists('curl_init')) { ?>
+            <p id="message" class="updated" style="padding:10px;"><strong>Attention:</strong>&nbsp;Currently nothing can be autosubmitted. Enable cURL extension for your webserver to use this feature!</p>
+            
+            <?php }?>
             <table>
                 <tr valign="top">
                     <th scope="row">Automatic Submission</th>
@@ -223,6 +227,9 @@
                 </tr>
             </table>
             <h2>Feed Settings</h2>
+            <?php if (!function_exists('curl_init')) { ?>
+            <p id="message" class="updated" style="padding:10px;"><strong>Attention:</strong>&nbsp;Currently no button will be inserted in your RSS feed. Enable cURL extension for your webserver to use this feature.</p>
+            <?php }?>
             <table>
                 <tr valign="top">
                 <th scope="row">Custom Image URL</th>
@@ -318,7 +325,4 @@
 </div>
 </div>
 
-        </div><script type="text/javascript" src="<?php
-    $plugindir = get_settings('siteurl').'/wp-content/plugins/'.dirname(plugin_basename(__FILE__));
-    echo $plugindir . '/tabber.js';
-?>"></script>
+        </div><script type="text/javascript" src="<?php echo FLATTRSS_PLUGIN_PATH . '/tabber.js'; ?>"></script>

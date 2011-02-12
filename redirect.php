@@ -2,7 +2,8 @@
 
 if (isset ($_GET['id'])&&
         isset ($_GET['md5'])&&
-        isset ($_GET['flattrss_redirect'])) {
+        isset ($_GET['flattrss_redirect'])&&
+        function_exists('curl_init')) {
 
     $e = error_reporting();
     if (get_option('flattrss_error_reporting')) {
