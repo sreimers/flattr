@@ -39,6 +39,9 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 `Attention: ` It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
 
+= 0.9.22.2 =
+* Plugin basic functionality will work even though cURL is not available
+
 = 0.9.22.1 =
 * Bugfix release
 * fixed empty admin dashboard
