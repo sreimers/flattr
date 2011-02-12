@@ -525,7 +525,8 @@ function new_flattrss_autosubmit_action () {
     $call_n = 1;
 }
 
-if (get_option('flattrss_autosubmit')) {
+
+if (get_option('flattrss_autosubmit') && function_exists('curl_init')) {
     add_action('save_post','new_flattrss_autosubmit_action',9999);
 }
 
