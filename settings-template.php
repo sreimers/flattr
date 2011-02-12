@@ -319,6 +319,6 @@
 </div>
 
         </div><script type="text/javascript" src="<?php
-    $plugindir = get_settings('home').'/wp-content/plugins/'.dirname(plugin_basename(__FILE__));
+    $plugindir = get_settings('siteurl').'/wp-content/plugins/'.dirname(plugin_basename(__FILE__));
     echo $plugindir . '/tabber.js';
 ?>"></script>

@@ -39,6 +39,10 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 `Attention: ` It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
 
+= 0.9.22.1 =
+* Bugfix release
+* fixed empty admin dashboard
+
 = 0.9.22 =
 * Wordpress 3 MS (ex-MU) support
 * Using latest Flattr REST API 0.5

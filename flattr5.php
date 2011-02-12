@@ -551,8 +551,9 @@ if(is_admin()) {
     }
 
     if (defined('LIBXML_VERSION')) {
-        if (version_compare(LIBXML_VERSION, 20627, '<')) {
-            $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There might be an <a href="http://forum.flattr.net/showthread.php?tid=681" target="_blank">incompatibility</a> with your web server running libxml '.LIBXML_VERSION.'. Flattr Plugin requieres at least 20627. You can help improve the Flattr experience for everybody, <a href="mailto:flattr@allesblog.de?subject='.rawurlencode("My webserver is running LIBXML Version ".LIBXML_VERSION).'">please contact me</a> :). See Feedback-tab for details.</p></div>\';';
+        define('LIBXML_TARGET',20616);
+        if (version_compare(LIBXML_VERSION, LIBXML_TARGET, '<')) {
+            $admin_notice .= 'echo \'<div id="message" class="updated"><p><strong>Warning:</strong> There might be an <a href="http://forum.flattr.net/showthread.php?tid=681" target="_blank">incompatibility</a> with your web server running libxml '.LIBXML_VERSION.'. Flattr Plugin requieres at least '.LIBXML_TARGET.'. You can help improve the Flattr experience for everybody, <a href="mailto:flattr@allesblog.de?subject='.rawurlencode("My webserver is running LIBXML Version ".LIBXML_VERSION).'">please contact me</a> :). See Feedback-tab for details.</p></div>\';';
         }
     } else {
         $admin_notice .= 'echo \'<div id="message" class="error"><p><strong>Error:</strong> Your PHP installation must support <strong>libxml</strong> for Flattr plugin to work!</p></div>\';';
