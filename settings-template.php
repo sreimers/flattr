@@ -300,6 +300,8 @@
                     $_SESSION['debug'] .= "HTTPSERVER: ".apache_get_version() ."\n";
                 } elseif (function_exists('iis_start_server')) {
                     $_SESSION['debug'] .= "IIS Server\n";
+                } else {
+                    $_SESSION['debug'] .= "non-Apache web Server\n";
                 }
                 if (function_exists('domxml_version')) {
                     $_SESSION['debug'] .=  "XML Version: ".domxml_version()." (PHP4!)\n";
@@ -311,6 +313,12 @@
                     foreach ($modules as $module) {
                         $_SESSION['debug'] .=  trim("$module ". phpversion($module)).", ";
                     }
+                }
+                if (function_exists('curl_init')) {
+                    $v = curl_version();
+                    $_SESSION['debug'] .=  "cURL extension installed. ".$v['version']."\n";
+                } else {
+                    $_SESSION['debug'] .=  "no cURL extension found.\n";
                 }
             }
             echo htmlentities($_SESSION['debug']);
