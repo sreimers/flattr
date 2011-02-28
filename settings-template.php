@@ -232,6 +232,11 @@
             <?php }?>
             <table>
                 <tr valign="top">
+                <th scope="row">RSS/Atom Feed Button</th>
+                <td><p><input name="flattrss_button_enabled" type="checkbox" <?php if(get_option('flattrss_button_enabled')) {echo "checked";}?> />&nbsp;A Flattr button will be included in the RSS/Atom Feed of your blog.</p>
+                </td>
+                </tr>
+                <tr valign="top">
                 <th scope="row">Custom Image URL</th>
                 <td><p>This image is served as static image to be included in the RSS/Atom Feed of your blog.</p><input name="flattrss_custom_image_url" size="70" value="<?php echo get_option('flattrss_custom_image_url');?>"/><br/>
                     <?php if ( get_option('flattrss_custom_image_url') != FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png') { ?>
@@ -276,7 +281,7 @@
         var flattr_cat = "software";
         var flattr_tag = "wordpress,plugin,flattr,rss";
         var flattr_url = "http://wordpress.org/extend/plugins/flattr/";
-    </script><script src="http://api.flattr.com/button/load.js" type="text/javascript"></script>
+    </script><script src="<?php echo (isset($_SERVER['HTTPS'])) ? 'https' : 'http'; ?>://api.flattr.com/button/load.js" type="text/javascript"></script>
     <p><a href="https://flattr.com/donation/give/to/der_michael" style="color:#ffffff;text-decoration:none;background-image: url(https://flattr.com/_img/fluff/bg-boxlinks-green.png);border-radius:3px;text-shadow:#666666 0 1px 1px;width:53px;padding:1px;padding-top: 2px;padding-bottom: 2px;display:block;text-align:center;font-weight: bold;" target="_blank">Donate</a></p>
                 </td>
                 <td>

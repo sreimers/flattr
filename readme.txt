@@ -3,7 +3,7 @@ Contributors: aphex3k
 Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
 Requires at least: 2.9.0
-Tested up to: 3.0.5
+Tested up to: 3.1
 Stable tag: trunk
 
 This plugin allows you to easily add a Flattr button to your wordpress blog.
@@ -38,6 +38,10 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 == Changelog ==
 
 `Attention: ` It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
+
+= 0.9.23 =
+* the Feed button can now be disabled
+* fixed a bug that accidentally deletes authorization keys while "Save Changes"
 
 = 0.9.22.2 =
 * Plugin basic functionality will work even though cURL is not available

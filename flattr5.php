@@ -4,7 +4,7 @@ if (session_id() == '') { session_start(); }
 
 class Flattr
 {
-	const VERSION = '0.9.22';
+	const VERSION = '0.9.23.';
 	const WP_MIN_VER = '2.9';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
@@ -383,6 +383,7 @@ function tabber_stylesheet() {
     add_option('flattrss_clicktrack_enabled', true);
     add_option('flattrss_error_reporting', true);
     add_option('flattrss_autosubmit', true);
+    add_option('flattrss_button_enabled', true);
     add_option('flattr_post_types', array('post','page'));
 
 function flattr_post2rss($content) {
@@ -401,7 +402,7 @@ function flattr_post2rss($content) {
     return ($content.$flattr);
 }
 
-if(function_exists('curl_init')) {
+if(function_exists('curl_init') && get_option('flattrss_button_enabled')) {
     add_filter('the_content_feed', 'flattr_post2rss',999999);
 }
 function new_flattrss_autosubmit_action () {
