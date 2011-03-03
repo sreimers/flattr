@@ -4,7 +4,7 @@ if (session_id() == '') { session_start(); }
 
 class Flattr
 {
-	const VERSION = '0.9.23.';
+	const VERSION = '0.9.23.1';
 	const WP_MIN_VER = '2.9';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
@@ -31,17 +31,19 @@ class Flattr
 			}
 			
 			$this->init();
-		}
-		if (( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' ) && !in_array( 'live-blogging/live-blogging.php' , get_option('active_plugins') ))
-		{
-			remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+		} else {
 
-                        add_filter('the_content', array($this, 'injectIntoTheContent'),11);
-                        add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
-			if ( get_option('flattr_override_sharethis', 'false') == 'true' ) {
-				add_action('plugins_loaded', array($this, 'overrideShareThis'));
-			}
-		}
+                    if (( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' ) && !in_array( 'live-blogging/live-blogging.php' , get_option('active_plugins') ))
+                    {
+                            remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+
+                            add_filter('the_content', array($this, 'injectIntoTheContent'),11);
+                            add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
+                            if ( get_option('flattr_override_sharethis', 'false') == 'true' ) {
+                                    add_action('plugins_loaded', array($this, 'overrideShareThis'));
+                            }
+                    }
+                }
 
 		wp_enqueue_script('flattrscript', ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https://' : 'http://' ) . self::API_SCRIPT, array(), '0.6', true);
 	}
@@ -405,6 +407,8 @@ function flattr_post2rss($content) {
 if(function_exists('curl_init') && get_option('flattrss_button_enabled')) {
     add_filter('the_content_feed', 'flattr_post2rss',999999);
 }
+
+$call_n = 0; # Do not delete! It will break autosubmit.
 function new_flattrss_autosubmit_action () {
 
     global $call_n;

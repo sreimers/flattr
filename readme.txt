@@ -39,6 +39,10 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 `Attention: ` It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
 
+= 0.9.23.1 =
+* reenabling auto-submit feature as soon as advanced account setup is complete.
+* raising compatibility alongside other oauth plugins
+
 = 0.9.23 =
 * the Feed button can now be disabled
 * fixed a bug that accidentally deletes authorization keys while "Save Changes"
