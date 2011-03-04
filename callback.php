@@ -1,6 +1,6 @@
 <?php
 
-if ( isset ($_REQUEST['oauth_token']) && isset ($_REQUEST['oauth_verifier'])) {
+if ( isset ($_REQUEST['oauth_token']) && isset ($_REQUEST['oauth_verifier']) && isset($_REQUEST['page']) && ($_REQUEST['page']=="flattr/settings.php")) {
 
     if (session_id() == '') { session_start(); }
 

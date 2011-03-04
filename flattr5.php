@@ -415,8 +415,8 @@ function new_flattrss_autosubmit_action () {
 
     $post = $_POST;
 
-    if (((get_option('flattr_hide') == false) && $post['post_status'] == "publish") && ($post['original_post_status'] != "publish" && (strtotime($post['post_date_gmt']) - strtotime(gmdate("Y-m-d H:i:s")) <= 0)) && ($call_n == 1)) {
-
+    if (((get_option('flattr_hide') == false) && $post['post_status'] == "publish") && ($post['original_post_status'] != "publish" && (strtotime($post['post_date_gmt']) - strtotime(gmdate("Y-m-d H:i:s")) <= 0)) && ($call_n == 0)) {
+    
         $e = error_reporting();
         error_reporting(E_ERROR);
 
@@ -527,6 +527,7 @@ function new_flattrss_autosubmit_action () {
 
         error_reporting($e);
     }
+    
     $call_n = 1;
 }
 
