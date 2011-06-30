@@ -2,7 +2,7 @@
 /**
  * @package Flattr
  * @author Michael Henke
- * @version 0.9.23.1
+ * @version 0.9.24
  */
 /*
 Plugin Name: Flattr

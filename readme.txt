@@ -39,6 +39,9 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 Attention: It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
 
+= 0.9.24 =
+* replaced the connect link for basic connect with Flattr with a text box where you enter your username yourself
+
 = 0.9.23.1 =
 * reenabling auto-submit feature as soon as advanced account setup is complete.
 * raising compatibility alongside other oauth plugins

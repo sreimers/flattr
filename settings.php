@@ -20,7 +20,7 @@ class Flattr_Settings
 
     public function register_settings()
     {
-        register_setting('flattr-settings-uid-group', 'flattr_uid',     array($this, 'sanitize_userid'));
+        register_setting('flattr-settings-group', 'flattr_uid',         array($this, 'sanitize_userid'));
         register_setting('flattr-settings-group', 'flattr_aut',         array($this, 'sanitize_auto'));
         register_setting('flattr-settings-group', 'flattr_aut_page',    array($this, 'sanitize_auto_page'));
         register_setting('flattr-settings-group', 'flattr_cat',         array($this, 'sanitize_category'));
@@ -45,12 +45,7 @@ class Flattr_Settings
 
     public function render()
     {
-        if (array_key_exists('FlattrId', $_GET)) {
-            include('settings-confirm-template.php');
-        }
-        else {
-            include('settings-template.php');
-        }
+        include('settings-template.php');
     }
 
     public function sanitize_category($category)

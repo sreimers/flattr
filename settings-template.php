@@ -17,6 +17,8 @@
     <div style="float:right; margin-top: -31px;"><img src="../wp-content/plugins/flattr/img/flattr-logo-beta-small.png" alt="Flattr Beta Logo"/></div>
     <div class="tabbertab" title="Flattr Account" style="border-left:0;">
 		<h2><?php _e('Basic Setup'); ?></h2>
+		<form method="post" action="options.php">
+			<?php settings_fields( 'flattr-settings-group' ); ?>
                 <p>
                     The basic account setup enables this plugin to work.
                 </p>
@@ -24,24 +26,7 @@
 			<tr valign="top">
 				<th scope="row"><?php _e('Your Flattr account'); ?></th>
 				<td>
-					<?php
-					$connect_callback = rawurlencode( (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
-					if (get_option('flattr_uid')) { ?>
-						Connected as
-							<?php
-							if (preg_match('/[A-Za-z-_.]/', get_option('flattr_uid'))) {
-								?><a href="<?php echo esc_url( 'https://flattr.com/profile/' . get_option('flattr_uid') ); ?>"><?php
-								esc_html_e(get_option('flattr_uid'));
-								?></a>.<?php
-							}
-							else {
-								?>user id <?php esc_html_e(get_option('flattr_uid'));?>.<?php
-							}
-							?>
-						(<a href="https://flattr.com/login?idCallback=<?php echo $connect_callback; ?>">Reconnect</a>)
-					<?php } else { ?>
-						None - <a href="https://flattr.com/login?idCallback=<?php echo $connect_callback; ?>">Connect with Flattr</a>
-					<?php } ?>
+					<input name="flattr_uid" type="text" value="<?php echo(get_option('flattr_uid')); ?>" />
 				</td>
 			</tr>
 		</table>
@@ -69,8 +54,6 @@
           <li>If everything is done correctly you'll see your <a href="#UserInfo">Flattr username and info</a> on this site.</li>
       </ol>
 <?php } ?>
-<form method="post" action="options.php">
-<?php settings_fields( 'flattr-settings-group' ); ?>
     <table class="form-table">
             <tr valign="top">
                 <th scope="row">Callback Domain</th>
