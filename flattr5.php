@@ -443,8 +443,8 @@ function new_flattrss_autosubmit_action () {
 
     $post = $_POST;
 
-    if (($post['post_status'] == "publish") && ($post['original_post_status'] != "publish") && ($call_n == 2)) {
-    
+    if (($post['post_status'] == "publish") && (get_post_meta($post['ID'], "flattrss_autosubmited", true)=="") && ($call_n == 2)) {
+
         $e = error_reporting();
         error_reporting(E_ERROR);
 
@@ -520,8 +520,15 @@ function new_flattrss_autosubmit_action () {
 
         $api_key = get_option('flattrss_api_key');
         $api_secret = get_option('flattrss_api_secret');
+
         $oauth_token = get_option('flattrss_api_oauth_token');
         $oauth_token_secret = get_option('flattrss_api_oauth_token_secret');
+
+        if (get_option('user_based_flattr_buttons_since_time')< strtotime(get_the_time("c",$post))) {
+            $user_id = get_current_user_id();
+            $oauth_token = (get_user_meta( $user_id, "user_flattrss_api_oauth_token",true)!="")?get_user_meta( $user_id, "user_flattrss_api_oauth_token",true):get_option('flattrss_api_oauth_token');
+            $oauth_token_secret = (get_user_meta( $user_id, "user_flattrss_api_oauth_token_secret",true))?get_user_meta( $user_id, "user_flattrss_api_oauth_token_secret",true):get_option('flattrss_api_oauth_token_secret');
+        }
 
         if (!class_exists('Flattr_Rest')) {
             include 'oAuth/flattr_rest.php';
@@ -548,7 +555,11 @@ function new_flattrss_autosubmit_action () {
         $server = $server[0];
 
         $hidden = (get_option('flattr_hide', true) || get_post_meta($post->ID, '_flattr_post_hidden', true) ||$server == "localhost")? true:false;
+        
         $flattr_user->submitThing($url, encode($title), $category, encode($content), $tags, $language, $hidden);
+
+        if ($flattr_user->http_code == 200)
+                add_post_meta($post['ID'], "flattrss_autosubmited", "true");
 
         error_reporting($e);
     }
