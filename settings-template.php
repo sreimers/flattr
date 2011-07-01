@@ -9,22 +9,44 @@
     $server = preg_split("/:/", $server);
     $server = $server[0];
 
+    $server2 = substr(home_url('','http'),7);
+    $server2 = preg_split("/\//", $server2);
+    $server2 = $server2[0];
+
     ?>
 <div class="wrap flattr-wrap" style="width:90%">
             <div>
             <!-- <h2><?php _e('Flattr Settings'); ?> <img id="loaderanim" onload="javascript:{document.getElementById('loaderanim').style.display='none'};" src="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/flattr'.'/img/loader.gif' ?>"/></h2> -->
 <div class="tabber">
-    <div style="float:right; margin-top: -31px;"><img src="../wp-content/plugins/flattr/img/flattr-logo-beta-small.png" alt="Flattr Beta Logo"/></div>
+    <div style="float:right; margin-top: -31px;margin-left: 10px;"><img src="../wp-content/plugins/flattr/img/flattr-logo-beta-small.png" alt="Flattr Beta Logo"/><br />
+        <ul style="margin-top: 10px;">
+            <li style="display: inline;">
+                <script type="text/javascript">
+                    var flattr_uid = "der_michael";
+                    var flattr_btn = "compact";
+                    var flattr_tle = "Wordpress Flattr plugin";
+                    var flattr_dsc = "Give your readers the opportunity to Flattr your effort. See http://wordpress.org/extend/plugins/flattr/ for details.";
+                    var flattr_cat = "software";
+                    var flattr_tag = "wordpress,plugin,flattr,rss";
+                    var flattr_url = "http://wordpress.org/extend/plugins/flattr/";
+                </script><script src="<?php echo (isset($_SERVER['HTTPS'])) ? 'https' : 'http'; ?>://api.flattr.com/button/load.js" type="text/javascript"></script>
+            </li>
+            <li style="display: inline-block;position:relative; top: -6px;"><a href="https://flattr.com/donation/give/to/der_michael" style="color:#ffffff;text-decoration:none;background-image: url('<?php echo get_bloginfo('wpurl');?>/wp-content/plugins/flattr/img/bg-boxlinks-green.png');border-radius:3px;text-shadow:#666666 0 1px 1px;width:53px;padding:1px;padding-top: 2px;padding-bottom: 2px;display:block;text-align:center;font-weight: bold;" target="_blank">Donate</a></li>
+        </ul>
+    </div>
     <div class="tabbertab" title="Flattr Account" style="border-left:0;">
+        <form method="post" action="options.php">
+        <?php settings_fields( 'flattr-settings-group' ); ?>
+        <?php if (current_user_can( "activate_plugins" )): ;?>
+        <p><input type="checkbox" name="user_based_flattr_buttons"<?php echo get_option('user_based_flattr_buttons')?" checked":"";?> />&nbsp;If you tick this box, every user of the blog will have the chance to register it's own Flattr buttons. Buttons will then be linked to post authors and only display if the user completed plugin setup.</p>
+        <?php endif; ?>
 		<h2><?php _e('Basic Setup'); ?></h2>
-		<form method="post" action="options.php">
-			<?php settings_fields( 'flattr-settings-group' ); ?>
-                <p>
+		<p>
                     The basic account setup enables this plugin to work.
                 </p>
                 <table class="form-table">
 			<tr valign="top">
-				<th scope="row"><?php _e('Your Flattr account'); ?></th>
+				<th scope="row"><?php _e('The blogs/your Flattr account'); ?></th>
 				<td>
 					<input name="flattr_uid" type="text" value="<?php echo(get_option('flattr_uid')); ?>" />
 				</td>
@@ -48,16 +70,18 @@
           <li>To get your personal Flattr APP Key and APP Secret you need to <a href="https://flattr.com/apps/new" target="_blank">register your blog</a> as Flattr app. <small><a href="http://developers.flattr.net/doku.php/register_your_application" target="_blank">(More Info)</a></small></li>
           <li>Choose reasonable values for <em>Application name</em>, <em>Application website</em> and <em>Application description</em></li>
           <li>It is mandatory to <strong>select BROWSER application type!</strong> This plugin will currently <strong>not work if CLIENT is selected</strong>.</li>
-          <li>You must use <code><?php echo $server; ?></code> as callback domain.</li>
+          <li>You must use <code><?php echo ($server == $server2)? $server2 : "$server2</code> or <code>$server"; ?></code> as callback domain.</li>
           <li>Copy 'n Paste your APP Key and APP Secret in the corresponding fields below. Save Changes.</li>
           <li>As soon as you saved your APP information <a href="#Authorize">authorize</a> your Flattr account with your own application.</li>
           <li>If everything is done correctly you'll see your <a href="#UserInfo">Flattr username and info</a> on this site.</li>
       </ol>
 <?php } ?>
-    <table class="form-table">
+   <table class="form-table">
             <tr valign="top">
                 <th scope="row">Callback Domain</th>
-                <td><input size="30" value="<?php echo $server; ?>" readonly/></td>
+                <td><input size="30" value="<?php echo $server2; ?>" readonly/><?php if ($server!=$server2) : ?>&nbsp;or
+                    <br /><input size="30" value="<?php echo $server; ?>" readonly/><p>One of the above values should work. If not. Please contact me.</p>
+                <?php endif; ?></td>
             </tr>
             <tr valign="top">
                 <th scope="row">APP_KEY</th>
@@ -114,6 +138,33 @@
 ?>
     </div>
     <div class="tabbertab" title="Post/Page Buttons">
+ 		<h2>Button Style</h2>
+                <p>What do you want your Flattr button to look like?</p>
+                <table id="option">
+                <tr>
+                    <td><input type="radio" name="flattr_button_style" value="js"<?=(get_option('flattr_button_style')=="js")?" checked":"";?>/></td>
+                    <td><script type="text/javascript">
+                            var flattr_uid = "der_michael";
+                            var flattr_btn = "<?=get_option('flattr_compact')?"compact":"";?>";
+                            var flattr_tle = "Wordpress Flattr plugin";
+                            var flattr_dsc = "Give your readers the opportunity to Flattr your effort. See http://wordpress.org/extend/plugins/flattr/ for details.";
+                            var flattr_cat = "software";
+                            var flattr_tag = "wordpress,plugin,flattr,rss";
+                            var flattr_url = "http://wordpress.org/extend/plugins/flattr/";
+                        </script><script src="<?php echo (isset($_SERVER['HTTPS'])) ? 'https' : 'http'; ?>://api.flattr.com/button/load.js" type="text/javascript"></script></td>
+                    <td>JavaScript Version</td>
+                </tr><tr>
+                    <td><input type="radio" name="flattr_button_style" value="image"<?=(get_option('flattr_button_style')=="image")?" checked":"";?>/></td>
+                    <td>
+                        <img src="<?=get_option('flattrss_custom_image_url');?>"/>
+                    </td>
+                    <td>static Image</td>
+                </tr><tr>
+                    <td><input type="radio" name="flattr_button_style" value="text"<?=(get_option('flattr_button_style')=="text")?" checked":"";?>/></td>
+                    <td><a href="#">Flattr this!</a></td>
+                    <td>static Text</td>
+                </tr>
+                </table>
 		<h2>Post/Page Buttons</h2>
                 <p>These options are for the Flattr buttons automatically generated for posts and pages.</p>
 		
@@ -197,10 +248,20 @@
             <p id="message" class="updated" style="padding:10px;"><strong>Attention:</strong>&nbsp;Currently nothing can be autosubmitted. Enable cURL extension for your webserver to use this feature!</p>
             
             <?php }?>
+
             <table>
                 <tr valign="top">
                     <th scope="row">Automatic Submission</th>
-                    <td><p><input name="flattrss_autosubmit" type="checkbox"<?php echo get_option('flattrss_autosubmit')? " checked": ""; echo ($oauth_token != $oauth_token_secret && get_option('flattr_hide') == false)? "":" disabled"; ?> />&nbsp;Check this box to automatically submit your blog post when you publish. You need to complete the full advanced setup in order for autosubmission to work.</p>
+                    <td><p><input name="flattrss_autosubmit" type="checkbox"<?php echo get_option('flattrss_autosubmit')? " checked": ""; echo ($oauth_token != $oauth_token_secret)? "":" disabled"; ?> />&nbsp;Check this box to automatically submit your blog post when you publish. You need to complete the full advanced setup in order for autosubmission to work.</p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">Excerpt Handling</th>
+                    <td><p>Let <select name="flattr_handles_exerpt">
+                                <option value="1" <?php echo (get_option('flattr_handles_exerpt')==1)? " selected": "";?>>Flattr Plugin</option>
+                                <option value="0" <?php echo (get_option('flattr_handles_exerpt')==0)? " selected": "";?>>Wordpress</option>
+                           </select> handle the excerpt. If you are new to the plugin select Wordpress here and see if it works out for you. If your upgrading from an earlier version this will likely default to Flattr plugin.
+                        </p>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -254,64 +315,21 @@
 
     <div class="tabbertab" title="Feedback">
         <h2>Feedback</h2>
-        <table>
-            <tr>
-                <td valign="top" style="padding-top:13px;padding-right: 13px;">
-                    <script type="text/javascript">
-        var flattr_uid = "der_michael";
-        var flattr_tle = "Wordpress Flattr plugin";
-        var flattr_dsc = "Give your readers the opportunity to Flattr your effort. See http://wordpress.org/extend/plugins/flattr/ for details.";
-        var flattr_cat = "software";
-        var flattr_tag = "wordpress,plugin,flattr,rss";
-        var flattr_url = "http://wordpress.org/extend/plugins/flattr/";
-    </script><script src="<?php echo (isset($_SERVER['HTTPS'])) ? 'https' : 'http'; ?>://api.flattr.com/button/load.js" type="text/javascript"></script>
-    <p><a href="https://flattr.com/donation/give/to/der_michael" style="color:#ffffff;text-decoration:none;background-image: url(https://flattr.com/_img/fluff/bg-boxlinks-green.png);border-radius:3px;text-shadow:#666666 0 1px 1px;width:53px;padding:1px;padding-top: 2px;padding-bottom: 2px;display:block;text-align:center;font-weight: bold;" target="_blank">Donate</a></p>
-                </td>
-                <td>
-                    <p>Please post feedback regarding wordpress integration on <a href="http://wordpress.org/tags/flattr?forum_id=10" target="_blank">the plugins board at wordpress.org</a>. You can use <a href="http://forum.flattr.net/" target="_blank">the official flattr board</a> for every concern regarding flattr.</p>
-                    <p>If you have a certain remark, request or simply something you want to let me know feel free to mail me at <a href="mailto:flattr@allesblog.de?subject=Flattr Wordpress Plugin" title="flattr@allesblog.de">flattr@allesblog.de</a>. Please note that I'm not an official part of the Flattr Dev-Team. So I can only answer questions regarding the flattr wordpress plugin alone.</p>
-                    <p><strong>Spread the word!</strong></p>
-                    <p>You can help getting Flattr out there!</p>
-                </td>
-            </tr>
-        </table>
+        <p>Please post feedback regarding wordpress integration on <a href="http://wordpress.org/tags/flattr?forum_id=10" target="_blank">the plugins board at wordpress.org</a>. You can use <a href="http://forum.flattr.net/" target="_blank">the official flattr board</a> for every concern regarding flattr.</p>
+        <p>If you have a certain remark, request or simply something you want to let me know feel free to mail me at <a href="mailto:flattr@allesblog.de?subject=Flattr Wordpress Plugin" title="flattr@allesblog.de">flattr@allesblog.de</a>. Please note that I'm not an official part of the Flattr Dev-Team. So I can only answer questions regarding the flattr wordpress plugin alone.</p>
+        <p><strong>Spread the word!</strong></p>
+        <p>You can help getting Flattr out there!</p>
         <h2>Debug</h2>
         <p>
-            Please provide the following information with your support request.
+            Please provide the following information with your support request. All fields are <em>optional</em>. However, If you expect a reply, provide at least a valid eMail address.
         </p>
-        <textarea cols="80" rows="10"><?php
-
-            if (time() - $_SESSION['debug_date']>60) {
-                $_SESSION['debug_date'] = time();
-                $_SESSION['debug'] = "";
-                if (function_exists('apache_get_version')) {
-                    $_SESSION['debug'] .= "HTTPSERVER: ".apache_get_version() ."\n";
-                } elseif (function_exists('iis_start_server')) {
-                    $_SESSION['debug'] .= "IIS Server\n";
-                } else {
-                    $_SESSION['debug'] .= "non-Apache web Server\n";
-                }
-                if (function_exists('domxml_version')) {
-                    $_SESSION['debug'] .=  "XML Version: ".domxml_version()." (PHP4!)\n";
-                }
-                if (defined('LIBXML_VERSION')) {
-                    $_SESSION['debug'] .= "LIBXML_VERSION: ". LIBXML_VERSION ."\n";
-                } else {
-                    $modules = get_loaded_extensions();
-                    foreach ($modules as $module) {
-                        $_SESSION['debug'] .=  trim("$module ". phpversion($module)).", ";
-                    }
-                }
-                if (function_exists('curl_init')) {
-                    $v = curl_version();
-                    $_SESSION['debug'] .=  "cURL extension installed. ".$v['version']."\n";
-                } else {
-                    $_SESSION['debug'] .=  "no cURL extension found.\n";
-                }
-            }
-            echo htmlentities($_SESSION['debug']);
-
-        ?></textarea>
+        <table>
+            <tr><td>Your Name:</td><td><input type="text" name="fname" /></td></tr>
+            <tr><td>Your eMail:</td><td><input type="text" name="femail" /></td></tr>
+            <tr><td>Comment:</td><td><textarea cols="80" rows="10" name="ftext">What's your problem?</textarea></td></tr>
+            <tr><td>DEBUG:</td><td><input type="checkbox" checked name="fphpinfo">&nbsp;Include extended debug information in mail. <a href="http://php.net/manual/function.phpinfo.php" target="_blank">phpinfo()</a></td></tr>
+            <tr><td>Send Mail</td><td><input type="checkbox" name="fsendmail">&nbsp;&lArr;&nbsp;tick this box and click "Save Changes" to submit support request.</td></tr>
+        </table>
     </div>
     <p class="submit">
         <input type="submit" class="button-primary" value="Save Changes" />

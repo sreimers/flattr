@@ -52,7 +52,7 @@ ul.tabbernav li a
  margin-left: 0px;
  border-bottom: none;
  background-color: #78A931;
- background-image: url(https://flattr.com/_img/fluff/bg-boxlinks-green.png);
+ background-image: url(../flattr/img/bg-boxlinks-green.png);
  color: #fff;
  border-left: 1px solid #7a3;
  text-decoration: none;
@@ -110,4 +110,11 @@ ul.tabbernav li.tabberactive a:hover
 .tabberlive#tab2 .tabbertab {
  height:200px;
  overflow:auto;
+}
+
+.tabbertab #option {
+    width: 400px;
+}
+.tabbertab #option tr {
+    height: 28px;
 }

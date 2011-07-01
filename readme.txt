@@ -2,8 +2,8 @@
 Contributors: aphex3k
 Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
-Requires at least: 2.9.0
-Tested up to: 3.1
+Requires at least: 3.0
+Tested up to: 3.1.4
 Stable tag: trunk
 
 This plugin allows you to easily add a Flattr button to your wordpress blog.
@@ -37,18 +37,26 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 == Changelog ==
 
-Attention: It is mandatory to disable FlattRSS and Flattr Widget standalone plugins before upgrading.
+= 0.9.25 =
+* Requires at least Wordpress 3.0, tested against Wordpress 3.1.4
+* New Feature: personalized Flattr buttons for every blog author
+* New Feature: choose whether Flattr plugin handles excerpts or Wordpress
+* New Feature: advanced feedback form
+* New Feature: select JavaScript, static image or static text button
+* Fix: buttons disabled for the post don't show up in the feed anymore
+* Fix: Wordpress admin dashboard external resources fix
+* Fix: trying to suggest the callback domain more reliably
 
 = 0.9.24 =
-* replaced the connect link for basic connect with Flattr with a text box where you enter your username yourself
+* Fix: replaced the connect link for basic connect with Flattr with a text box where you enter your username yourself
 
 = 0.9.23.1 =
-* reenabling auto-submit feature as soon as advanced account setup is complete.
-* raising compatibility alongside other oauth plugins
+* New Feature: reenabling auto-submit feature as soon as advanced account setup is complete.
+* Fix: raising compatibility alongside other oauth plugins (Twitter Tools, etc.)
 
 = 0.9.23 =
-* the Feed button can now be disabled
-* fixed a bug that accidentally deletes authorization keys while "Save Changes"
+* New Feature: the Feed button can now be disabled
+* Fix: fixed a bug that accidentally deletes authorization keys while "Save Changes"
 
 = 0.9.22.2 =
 * Plugin basic functionality will work even though cURL is not available

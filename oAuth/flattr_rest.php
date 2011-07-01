@@ -15,14 +15,10 @@ class Flattr_Rest
 
 	private $apiVersion = '0.5';
 	private $error;
-	private $baseUrl = 'http://api.flattr.com';
+	private $baseUrl = 'https://api.flattr.com';
 
 	public function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null)
 	{
-	    if ( defined('LOCAL_DEV_ENV') )
-	    {
-	        $this->baseUrl = 'http://api.flattr.com';
-	    }
 
 		$this->signature_method = new OAuthSignatureMethod_HMAC_SHA1();
 		$this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
@@ -335,20 +331,26 @@ class Flattr_Rest
 		Flattr_Xml::addElement($node, 'language', $language);
 		Flattr_Xml::addElement($node, 'hidden', $hidden);
 		Flattr_Xml::addElement($node, 'temporary', $temporary);
-		
-		$tagsNode = $node->appendChild( $dom->createElement('tags') );
-		foreach ( explode(',', $tags) as $tag )
-		{
-		    Flattr_Xml::addElement($tagsNode, 'tag', trim($tag));
-		}
-		
-		$result = $this->post($this->actionUrl('/thing/register'), array('data' => $dom->saveXml()));
-		
-		$dom = new DOMDocument();
-		$dom->loadXml($result);
-		$thingXml = $dom->getElementsByTagName('thing');
 
-		return Flattr_Xml::toArray( $thingXml->item(0) );
+                if (trim($tags) != "") {
+                    $tagsNode = $node->appendChild( $dom->createElement('tags') );
+                    foreach ( explode(',', $tags) as $tag )
+                    {
+                        Flattr_Xml::addElement($tagsNode, 'tag', trim($tag));
+                    }
+                }
+
+                $result = $this->post($this->actionUrl('/thing/register'), array('data' => $dom->saveXml()));
+
+                if (!empty ($result)) {
+                    $dom = new DOMDocument();
+                    $dom->loadXml($result);
+                    $thingXml = $dom->getElementsByTagName('thing');
+
+                    return Flattr_Xml::toArray( $thingXml->item(0) );
+                } 
+                return false;
+
 	}
 
 	// Oauth specific

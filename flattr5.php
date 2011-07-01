@@ -4,8 +4,8 @@ if (session_id() == '') { session_start(); }
 
 class Flattr
 {
-	const VERSION = '0.9.23.1';
-	const WP_MIN_VER = '2.9';
+	const VERSION = '0.9.25';
+	const WP_MIN_VER = '3.0';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
 	/** @var array */
@@ -35,13 +35,14 @@ class Flattr
 
                     if (( get_option('flattr_aut_page', 'off') == 'on' || get_option('flattr_aut', 'off') == 'on' ) && !in_array( 'live-blogging/live-blogging.php' , get_option('active_plugins') ))
                     {
+                        if (get_option('flattr_handles_exerpt')==1) {
                             remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-
-                            add_filter('the_content', array($this, 'injectIntoTheContent'),11);
                             add_filter('get_the_excerpt', array($this, 'filterGetExcerpt'), 1);
-                            if ( get_option('flattr_override_sharethis', 'false') == 'true' ) {
-                                    add_action('plugins_loaded', array($this, 'overrideShareThis'));
-                            }
+                        }
+                        if ( get_option('flattr_override_sharethis', 'false') == 'true' ) {
+                                add_action('plugins_loaded', array($this, 'overrideShareThis'));
+                        }
+                        add_filter('the_content', array($this, 'injectIntoTheContent'));
                     }
                 }
 
@@ -114,21 +115,24 @@ class Flattr
 			return '';
 		}
 
-		$flattr_uid = get_option('flattr_uid');
-		if (!$flattr_uid) {
+		if (get_option('user_based_flattr_buttons_since_time')< strtotime(get_the_time("c",$post)))
+                    $flattr_uid = (get_option('user_based_flattr_buttons')&& get_user_meta(get_the_author_meta('ID'), "user_flattr_uid", true)!="")? get_user_meta(get_the_author_meta('ID'), "user_flattr_uid", true): get_option('flattr_uid');
+                else
+                    $flattr_uid = get_option('flattr_uid');
+                if (!$flattr_uid) {
 			return '';
 		}
 
 		$selectedLanguage = get_post_meta($post->ID, '_flattr_post_language', true);
 		if (empty($selectedLanguage))
 		{
-			$selectedLanguage = get_option('flattr_lng');
+			$selectedLanguage = (get_option('user_based_flattr_buttons')&& get_user_meta(get_the_author_meta('ID'), "user_flattr_lng", true)!="")? get_user_meta(get_the_author_meta('ID'), "user_flattr_lng", true): get_option('flattr_lng');
 		}
 
 		$selectedCategory = get_post_meta($post->ID, '_flattr_post_category', true);
 		if (empty($selectedCategory))
 		{
-			$selectedCategory = get_option('flattr_cat');
+			$selectedCategory = (get_option('user_based_flattr_buttons')&& get_user_meta(get_the_author_meta('ID'), "user_flattr_cat", true)!="")? get_user_meta(get_the_author_meta('ID'), "user_flattr_cat", true): get_option('flattr_cat');
 		}
 
 		$hidden = get_post_meta($post->ID, '_flattr_post_hidden', true);
@@ -153,7 +157,18 @@ class Flattr
 
 		if (isset($buttonData['user_id'], $buttonData['url'], $buttonData['language'], $buttonData['category']))
 		{
-			return $this->getButtonCode($buttonData);
+                        $retval;
+			switch (get_option(flattr_button_style)) {
+                            case "text":
+                                $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank">Flattr this!</a>';
+                                break;
+                            case "image":
+                                $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank"><img src="'. FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png" alt="flattr this!"/></a>';
+                                break;
+                            default:
+                                $retval = $this->getButtonCode($buttonData);;
+                        }
+                        return $retval;
 		}
 	}
 
@@ -342,7 +357,8 @@ Flattr::getInstance();
  */
 function get_the_flattr_permalink()
 {
-	return Flattr::getInstance()->getButton(true);
+
+    return Flattr::getInstance()->getButton(true);
 }
 
 /**
@@ -387,19 +403,29 @@ function tabber_stylesheet() {
     add_option('flattrss_autosubmit', true);
     add_option('flattrss_button_enabled', true);
     add_option('flattr_post_types', array('post','page'));
+    add_option('flattr_handles_exerpt', true);
+    add_option('flattr_button_style','js');
+
+function static_flattr_url($post) {
+    $id = $post->ID;
+    $md5 = md5($post->post_title);
+
+    return (get_bloginfo('wpurl') .'/?flattrss_redirect&amp;id='.$id.'&amp;md5='.$md5);
+}
 
 function flattr_post2rss($content) {
     global $post;
 
     $flattr = "";
-    $flattr_post_types = get_option('flattr_post_types');
 
-    if (is_feed() && in_array(get_post_type(), $flattr_post_types)) {
-        $id = $post->ID;
-        $md5 = md5($post->post_title);
-        $permalink = urlencode(get_permalink( $id ));
+    if (get_post_meta($post->ID, '_flattr_btn_disabled', false)) {
+        
+        $flattr_post_types = get_option('flattr_post_types');
 
-        $flattr.= ' <p><a href="'. get_bloginfo('wpurl') .'/?flattrss_redirect&amp;id='.$id.'&amp;md5='.$md5.'" title="Flattr" target="_blank"><img src="'. FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png" alt="flattr this!"/></a></p>';
+        if (is_feed() && in_array(get_post_type(), $flattr_post_types)) {
+            $flattr.= ' <p><a href="'. static_flattr_url($post).'" title="Flattr" target="_blank"><img src="'. FLATTRSS_PLUGIN_PATH .'/img/flattr-badge-large.png" alt="flattr this!"/></a></p>';
+        }
+        
     }
     return ($content.$flattr);
 }
@@ -413,9 +439,11 @@ function new_flattrss_autosubmit_action () {
 
     global $call_n;
 
+    $call_n += 1;
+
     $post = $_POST;
 
-    if (((get_option('flattr_hide') == false) && $post['post_status'] == "publish") && ($post['original_post_status'] != "publish" && (strtotime($post['post_date_gmt']) - strtotime(gmdate("Y-m-d H:i:s")) <= 0)) && ($call_n == 0)) {
+    if (($post['post_status'] == "publish") && ($post['original_post_status'] != "publish") && ($call_n == 2)) {
     
         $e = error_reporting();
         error_reporting(E_ERROR);
@@ -424,7 +452,7 @@ function new_flattrss_autosubmit_action () {
         $tagsA = get_the_tags($post['ID']);
         $tags = "";
 
-        if ($tagsA) {
+        if (!empty($tagsA)) {
             foreach ($tagsA as $tag) {
                 if (strlen($tags)!=0){
                     $tags .=",";
@@ -434,7 +462,7 @@ function new_flattrss_autosubmit_action () {
         }
 
         if (trim($tags) == "") {
-            $tags .= "blog";
+            $tags = "blog";
         }
 
         $category = "text";
@@ -515,20 +543,15 @@ function new_flattrss_autosubmit_action () {
             }
         }
 
-        #print_r(array($url, encode($title), $category, encode($content), $tags, $language));
+        $server = $_SERVER["SERVER_NAME"];
+        $server = preg_split("/:/", $server);
+        $server = $server[0];
 
-        $flattr_user->submitThing($url, encode($title), $category, encode($content), $tags, $language, get_option('flattr_hide'));
-
-        /*
-        if (get_option('flattrss_autodonate') && !isset($_SESSION['flattrss_autodonate_click'])) {
-            $flattr_user->clickThing("ead246fc95fc401ce69d15f3981da971");
-            $_SESSION['flattrss_autodonate_click'] = true;
-        }*/
+        $hidden = (get_option('flattr_hide', true) || get_post_meta($post->ID, '_flattr_post_hidden', true) ||$server == "localhost")? true:false;
+        $flattr_user->submitThing($url, encode($title), $category, encode($content), $tags, $language, $hidden);
 
         error_reporting($e);
     }
-    
-    $call_n = 1;
 }
 
 
@@ -581,4 +604,100 @@ if(is_admin()) {
         );
     }
 
+}
+
+if (!empty($_POST) && $_POST['fsendmail']=="on") {
+
+    if ($_POST['fphpinfo']) {
+    ob_start();
+    phpinfo();
+    $mailtext = ob_get_clean();
+
+    }
+
+    $mailtext = $_POST['ftext'] ."\n<br/><br/>".$mailtext;
+
+    $header  = "MIME-Version: 1.0\r\n";
+    $header .= "Content-type: text/html; charset=iso-8859-1\r\n";
+
+    $name = ($_POST['fname'] != "")? $_POST['fname'] : "unknown";
+    $from = ($_POST['femail'] != "")? $_POST['femail'] : "support@allesblog.de";
+    $header .= "From: $name <$from>\r\n";
+    $header .= "X-Mailer: PHP ". phpversion();
+
+    $fmail = mail( 'flattr@allesblog.de',
+          "Wordpress Flattr Plugin Support Request",
+          $mailtext,
+          $header);
+
+    $admin_notice = "";
+    if ($fmail) {
+        $admin_notice = 'echo \'<div id="message" class="updated"><p>Mail send successfully!</p></div>\';';
+    } else {
+        $admin_notice = 'echo \'<div id="message" class="error"><p>There was an error sending the email.</p></div>\';';
+    }
+
+    add_action( 'admin_notices',
+        create_function('', $admin_notice)
+    );
+}
+
+if (is_admin() && (ini_get('allow_url_fopen') || function_exists('curl_init')))
+    add_action('in_plugin_update_message-flattr/flattr.php', 'flattr_in_plugin_update_message');
+
+function flattr_in_plugin_update_message() {
+
+    $url = 'http://plugins.trac.wordpress.org/browser/flattr/trunk/readme.txt?format=txt';
+    $data = "";
+    
+    if ( ini_get('allow_url_fopen') )
+        $data = file_get_contents($url);
+    else
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_URL,$url);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+            $data = curl_exec($ch);
+            curl_close($ch);
+        }
+
+
+    if ($data) {
+        $matches = null;
+        $regexp = '~==\s*Changelog\s*==\s*=\s*[0-9.]+\s*=(.*)(=\s*' . preg_quote(Flattr::VERSION) . '\s*=|$)~Uis';
+
+        if (preg_match($regexp, $data, $matches)) {
+            $changelog = (array) preg_split('~[\r\n]+~', trim($matches[1]));
+
+            echo '</div><div class="update-message" style="font-weight: normal;"><strong>What\'s new:</strong>';
+            $ul = false;
+            $version = 99;
+
+            foreach ($changelog as $index => $line) {
+                if (version_compare($version, Flattr::VERSION,">"))
+                if (preg_match('~^\s*\*\s*~', $line)) {
+                    if (!$ul) {
+                        echo '<ul style="list-style: disc; margin-left: 20px;">';
+                        $ul = true;
+                    }
+                    $line = preg_replace('~^\s*\*\s*~', '', htmlspecialchars($line));
+                    echo '<li style="width: 50%; margin: 0;">' . $line . '</li>';
+                } else {
+                    if ($ul) {
+                        echo '</ul>';
+                        $ul = false;
+                    }
+
+                    $version = trim($line, " =");
+                    echo '<p style="margin: 5px 0;">' . htmlspecialchars($line) . '</p>';
+                }
+            }
+
+            if ($ul) {
+                echo '</ul><div style="clear: left;"></div>';
+            }
+
+            echo '</div>';
+        }
+    }
 }

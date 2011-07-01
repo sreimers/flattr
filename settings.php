@@ -11,12 +11,12 @@ class Flattr_Settings
     public function init_ui()
     {
         $menutitle = __('Flattr', 'flattr');
-	add_menu_page('Flattr',  $menutitle, 1, 'flattr/settings.php', '', get_bloginfo('wpurl') . '/wp-content/plugins/flattr'.'/img/flattr-icon_new.png');
-        
-        add_submenu_page( 'flattr/settings.php', __('Flattr'), __('Flattr'), 'manage_options', 'flattr/settings.php', array($this, 'render'));
 
+        $cap = get_option('user_based_flattr_buttons')? "edit_posts":"manage_options";
 
-    }
+        add_menu_page('Flattr',  $menutitle, $cap, 'flattr/settings.php', '', get_bloginfo('wpurl') . '/wp-content/plugins/flattr'.'/img/flattr-icon_new.png');
+        add_submenu_page( 'flattr/settings.php', __('Flattr'), __('Flattr'), $cap, 'flattr/settings.php', array($this, 'render'));
+        }
 
     public function register_settings()
     {
@@ -37,15 +37,32 @@ class Flattr_Settings
         register_setting('flattr-settings-group', 'flattrss_custom_image_url');
         register_setting('flattr-settings-group', 'flattrss_autosubmit');
         register_setting('flattr-settings-group', 'flattr_post_types');
-        # bugfix accidental forget authorization
-        #register_setting('flattr-settings-group', 'flattrss_api_oauth_token_secret');
-        #register_setting('flattr-settings-group', 'flattrss_api_oauth_token');
+
         register_setting('flattr-settings-group', 'flattrss_button_enabled');
+        register_setting('flattr-settings-group', 'flattr_handles_exerpt');
+        register_setting('flattr-settings-group', 'flattr_button_style');
+
+        if (isset($_POST['user_flattr_uid']) && isset($_POST['user_flattr_cat']) && isset ($_POST['user_flattr_lng'])) {
+            require_once( ABSPATH . WPINC . '/registration.php');
+            $user_id = get_current_user_id( );
+
+            update_user_meta( $user_id, "user_flattr_uid", $_POST['user_flattr_uid'] );
+            update_user_meta( $user_id, "user_flattr_cat", $_POST['user_flattr_cat'] );
+            update_user_meta( $user_id, "user_flattr_lng", $_POST['user_flattr_lng'] );
+        }
+
+        if(get_option('user_based_flattr_buttons')) {
+            add_option('user_based_flattr_buttons_since_time', time());
+        }
     }
 
     public function render()
     {
-        include('settings-template.php');
+        if (current_user_can("activate_plugins")) {
+            include('settings-template.php');
+        } elseif (current_user_can("edit_posts") && get_option('user_based_flattr_buttons')) {
+            include('user-settings-template.php');
+       }
     }
 
     public function sanitize_category($category)
