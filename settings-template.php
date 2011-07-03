@@ -109,7 +109,7 @@
 
     if ($token != "") {
 
-    $url = $flattr->getAuthorizeUrl($token, 'read,readextended,click,publish');
+        $url = $flattr->getAuthorizeUrl($token, 'read,readextended,click,publish');
 
         ?><a name="Authorize"><div id="icon-options-general" class="icon32"><br /></div><h2>Authorize App</h2></a>
         <p>In order to automatically generate the correct "<em>Things</em>" link for your blog post from the feed, you need to authorize you Flattr app with your Flattr account.</p>
@@ -118,7 +118,7 @@
     } else {
         ?><a name="Authorize"><div id="icon-options-general" class="icon32"><br /></div><h2>Authorize App</h2></a>
         <p>Unable to aquire oAuth token. What now?</p>
-        <ul>
+        <ol>
             <li>Check PHP cURL support</li>
             <li>Check PHP libXML support</li>
             <li>Check PHP DOM support</li>
@@ -126,7 +126,7 @@
             <li>Flattr Service might be down?</li>
             <li>There might be a communication/firewall issue between your webserver and flattr.com</li>
             <li>Try again later...</li>
-        </ul>
+        </ol>
         <?php
     }
 
