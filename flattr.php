@@ -2,11 +2,11 @@
 /**
  * @package Flattr
  * @author Michael Henke
- * @version 0.9.25.1
+ * @version 0.9.25.2
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 0.9.25.1
+Version: 0.9.25.2
 Author: Michael Henke
 Author URI: http://allesblog.de/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -28,7 +28,7 @@ else
         }
         
         if (version_compare(get_option('flattr_warn_ignore_version'), Flattr::VERSION, '!=')) {
-            $flattr_check['DOMDocument'] = class_exists('DOMDocuemnt');
+            $flattr_check['DOMDocument'] = class_exists('DOMDocument');
             $flattr_check['cURL'] = function_exists('curl_init');
             $flattr_check['libxml'] = defined('LIBXML_VERSION');
 
@@ -38,6 +38,8 @@ else
         }
 
         function flattrCheckAdminNotice() {
+
+                global $flattr_check;
                 echo '<div id="message" class="error">';
                 echo '<div style="float:right"><form method="post">'.
                      '<input type="submit" class="button" name="flattr_warn_ignore" value="Ignore"/>'.

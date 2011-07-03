@@ -4,7 +4,7 @@ if (session_id() == '') { session_start(); }
 
 class Flattr
 {
-	const VERSION = '0.9.25.1';
+	const VERSION = '0.9.25.2';
 	const WP_MIN_VER = '3.0';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
