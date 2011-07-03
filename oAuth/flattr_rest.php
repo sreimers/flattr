@@ -296,13 +296,15 @@ class Flattr_Rest
 			}
 		}
 
-		$dom = new DOMDocument();
-		$dom->loadXml($result);
-		$userXml = $dom->getElementsByTagName('user');
-		if ( ( $userXml = $userXml->item(0) ) !== null )
-		{
-		    return Flattr_Xml::toArray( $userXml );
-		}
+                if (class_exists("DOMDocument")) {
+                    $dom = new DOMDocument();
+                    $dom->loadXml($result);
+                    $userXml = $dom->getElementsByTagName('user');
+                    if ( ( $userXml = $userXml->item(0) ) !== null )
+                    {
+                        return Flattr_Xml::toArray( $userXml );
+                    }
+                }
 
 		return false;
 	}

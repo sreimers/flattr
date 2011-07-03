@@ -4,7 +4,7 @@ if (session_id() == '') { session_start(); }
 
 class Flattr
 {
-	const VERSION = '0.9.25';
+	const VERSION = '0.9.25.1';
 	const WP_MIN_VER = '3.0';
 	const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
@@ -443,7 +443,7 @@ function new_flattrss_autosubmit_action () {
 
     $post = $_POST;
 
-    if (($post['post_status'] == "publish") && (get_post_meta($post['ID'], "flattrss_autosubmited", true)=="") && ($call_n == 2)) {
+    if (($post['post_status'] == "publish") && (get_post_meta($post['ID'], "flattrss_autosubmited", true)=="") && ($call_n == 2) && (the_time('U') <= time())) {
 
         $e = error_reporting();
         error_reporting(E_ERROR);

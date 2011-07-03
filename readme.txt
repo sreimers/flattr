@@ -37,6 +37,11 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 == Changelog ==
 
+= 0.9.25.1 =
+* New Feature: Changelog Preview
+* New Feature: Explicit warning messages about missing functionality
+* Fix: Check time of post before autopublishing
+
 = 0.9.25 =
 * Requires at least Wordpress 3.0, tested against Wordpress 3.1.4
 * New Feature: personalized Flattr buttons for every blog author

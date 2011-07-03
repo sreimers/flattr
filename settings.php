@@ -42,6 +42,8 @@ class Flattr_Settings
         register_setting('flattr-settings-group', 'flattr_handles_exerpt');
         register_setting('flattr-settings-group', 'flattr_button_style');
 
+        register_setting('flattr-settings-group', 'flattr_warn_ignore_version');
+
         if (isset($_POST['user_flattr_uid']) && isset($_POST['user_flattr_cat']) && isset ($_POST['user_flattr_lng'])) {
             require_once( ABSPATH . WPINC . '/registration.php');
             $user_id = get_current_user_id( );
