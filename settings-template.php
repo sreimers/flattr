@@ -107,12 +107,15 @@
     $token = $flattr->getRequestToken( $callback_ );
     $_SESSION['flattrss_current_token'] = $token;
 
+    if ($token != "") {
+
     $url = $flattr->getAuthorizeUrl($token, 'read,readextended,click,publish');
 
         ?><a name="Authorize"><div id="icon-options-general" class="icon32"><br /></div><h2>Authorize App</h2></a>
         <p>In order to automatically generate the correct "<em>Things</em>" link for your blog post from the feed, you need to authorize you Flattr app with your Flattr account.</p>
-          <p><a href="<?php echo $url;?>">(re-)Authorize with Flattr</a>.
-<?php
+          <p><a href="<?php echo $url;?>">(re-)Authorize with Flattr</a>.</p>
+        <?php
+    }
 
                 #print_r($flattr);
 
