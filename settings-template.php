@@ -115,6 +115,19 @@
         <p>In order to automatically generate the correct "<em>Things</em>" link for your blog post from the feed, you need to authorize you Flattr app with your Flattr account.</p>
           <p><a href="<?php echo $url;?>">(re-)Authorize with Flattr</a>.</p>
         <?php
+    } else {
+        ?><a name="Authorize"><div id="icon-options-general" class="icon32"><br /></div><h2>Authorize App</h2></a>
+        <p>Unable to aquire oAuth token. What now?</p>
+        <ul>
+            <li>Check PHP cURL support</li>
+            <li>Check PHP libXML support</li>
+            <li>Check PHP DOM support</li>
+            <li>DoubleCheck APP_KEY & APP_SECERT</li>
+            <li>Flattr Service might be down?</li>
+            <li>There might be a communication/firewall issue between your webserver and flattr.com</li>
+            <li>Try again later...</li>
+        </ul>
+        <?php
     }
 
                 #print_r($flattr);
