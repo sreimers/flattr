@@ -38,6 +38,9 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 == Changelog ==
 
 = 0.9.25.2 =
+* Fix: typo in check time of post before autopublishing
+
+= 0.9.25.2 =
 * Fix: fixed a typo in the code, thanks to F. Holzhauer
 
 = 0.9.25.1 =

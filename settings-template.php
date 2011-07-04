@@ -55,7 +55,7 @@
 <?php if (get_option('flattr_uid') && function_exists('curl_init')) { ?>
                 <h2>Advanced Setup</h2>
                 <p>
-                    The advanced account setup enables advanced features like Feed buttons and autosubmit.
+                    The advanced account setup enables autosubmit feature.
                 </p>
 <?php
     $oauth_token = get_option('flattrss_api_oauth_token');
