@@ -42,7 +42,7 @@ class Flattr
                         if ( get_option('flattr_override_sharethis', 'false') == 'true' ) {
                                 add_action('plugins_loaded', array($this, 'overrideShareThis'));
                         }
-                        add_filter('the_content', array($this, 'injectIntoTheContent'));
+                        add_filter('the_content', array($this, 'injectIntoTheContent'), 32767);
                     }
                 }
 
@@ -209,7 +209,7 @@ class Flattr
 			$params['url'],
 			addslashes($params['title']),
 			$rev,
-			$params['body']
+			addslashes($params['body'])
 		);
 	}
 
