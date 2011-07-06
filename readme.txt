@@ -195,4 +195,4 @@ A: Please clear session/cookie/browser cache and try again please.
 
 For support requests regarding the wordpress plugin, please visit the plugin support forum: http://wordpress.org/tags/flattr?forum_id=10
 
-For every other Flattr support request head over to the Flattr forum: http://forum.flattr.com/
+For every other Flattr support request head over to the Flattr forum: http://forum.flattr.net/
