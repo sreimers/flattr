@@ -3,7 +3,7 @@ Contributors: aphex3k
 Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
 Requires at least: 3.0
-Tested up to: 3.1.4
+Tested up to: 3.2
 Stable tag: trunk
 
 This plugin allows you to easily add a Flattr button to your wordpress blog.
