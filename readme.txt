@@ -37,6 +37,9 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 == Changelog ==
 
+= 0.9.25.4 =
+* Fix: saving option for user based flattr buttons
+
 = 0.9.25.3 =
 * Fix: typo in check time of post before autopublishing
 
