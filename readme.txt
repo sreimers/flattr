@@ -37,6 +37,9 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 == Changelog ==
 
+= 0.9.25.5 =
+* Fix: Erroneous escaping in advanced thing submit (by qnrq)
+
 = 0.9.25.4 =
 * New Feature: Initial test with WP 3.2 passed
 * Fix: saving option for user based flattr buttons
