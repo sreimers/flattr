@@ -139,7 +139,7 @@ class OAuth2Client
     {
         $response = $this->get($path);
         if (!empty($response->body) ) {
-            return static::parseResponse($response);
+            return self::parseResponse($response);
         } else {
             return array(
                 'error' => 'did not get a body from '.$uri
