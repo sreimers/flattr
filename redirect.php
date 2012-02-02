@@ -2,8 +2,7 @@
 
 if (isset ($_GET['id'])&&
         isset ($_GET['md5'])&&
-        isset ($_GET['flattrss_redirect'])&&
-        function_exists('curl_init')) {
+        isset ($_GET['flattrss_redirect'])) {
 
     header('Status-Code: 307');
 

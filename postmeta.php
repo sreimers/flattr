@@ -22,7 +22,7 @@ class Flattr_PostMeta
 	
 		add_post_meta($id, '_flattr_post_language', $_POST['flattr_post_language'], true) or update_post_meta($id, '_flattr_post_language', $_POST['flattr_post_language']);
 		add_post_meta($id, '_flattr_post_category', $_POST['flattr_post_category'], true) or update_post_meta($id, '_flattr_post_category', $_POST['flattr_post_category']);
-		add_post_meta($id, '_flattr_post_hidden',	$_POST['flattr_post_hidden'],	true) or update_post_meta($id, '_flattr_post_hidden',	$_POST['flattr_post_hidden']);
+		add_post_meta($id, '_flattr_post_hidden',   $_POST['flattr_post_hidden'],   true) or update_post_meta($id, '_flattr_post_hidden',   $_POST['flattr_post_hidden']);
 		add_post_meta($id, '_flattr_btn_disabled',  $_POST['flattr_btn_disabled'],  true) or update_post_meta($id, '_flattr_btn_disabled',  $_POST['flattr_btn_disabled']);
 		
 		return true;

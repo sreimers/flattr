@@ -2,11 +2,11 @@
 Contributors: aphex3k
 Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
-Requires at least: 3.0
-Tested up to: 3.2
+Requires at least: 3.3
+Tested up to: 3.3.1
 Stable tag: trunk
 
-This plugin allows you to easily add a Flattr button to your wordpress blog.
+This plugin allows you to easily add a Flattr button to your wordpress blog. The Button can appear on-site, as well as in your RSS/Atom Feed. Autosubmission will create a Flattr thing whenever you post a new entry.
 
 == Description ==
 
@@ -17,9 +17,6 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 **Flattr requires an account at flattr.com!**
 
 == Installation ==
-
-Note that we only support PHP 5 and WordPress 2.9 or above.
-To use advanced features like auto-submission or feed-buttons, your web server needs cURL extension installed.
 
 1. Upload the folder 'flattr' to your server in the folder '/wp-content/plugins/'
 2. Go to the WordPress control panel and find the 'Plugins' section
@@ -36,6 +33,15 @@ To use advanced features like auto-submission or feed-buttons, your web server n
 
 
 == Changelog ==
+
+= 0.99.1 =
+* Important: Please skip this update if the current installed version works for you
+* Important: Due to API changes all registered Flattr apps must be re-created and re-authorized (which should work like a charm now!)
+* New Feature: complete rewrite for new Flattr API v2
+* New Feature: new oAuth wizard
+* New Feature: Payment Link entities for Atom and RSS feeds
+* Fix: user based flattr buttons
+* Removed: Tabbing
 
 = 0.9.25.5 =
 * Fix: Erroneous escaping in advanced thing submit (by qnrq)
