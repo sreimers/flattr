@@ -113,7 +113,7 @@ class Flattr
                     if (version_compare(PHP_VERSION, '5.0.0', '>')) {
                         $retval["result"] = WARN;
                     }
-                    if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+                    if (version_compare(PHP_VERSION, '5.2.0', '>=')) {
                         $retval["result"] = PASS;
                     }
                     break;

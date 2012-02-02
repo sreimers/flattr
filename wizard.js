@@ -71,7 +71,7 @@ var wizard = {
             
             var enable = true;
             jQuery(".flattr-server-check").each(function () {
-                if (!jQuery(this).hasClass("passed")) {
+                if (jQuery(this).hasClass("failed")) {
                     enable = false;
                 }
             });
