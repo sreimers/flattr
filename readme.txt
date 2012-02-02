@@ -34,6 +34,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 0.99.2 =
+* Fix: Wizard should work with PHP 5.2 now
+
 = 0.99.1 =
 * Important: Please skip this update if the current installed version works for you
 * Important: Due to API changes all registered Flattr apps must be re-created and re-authorized (which should work like a charm now!)
