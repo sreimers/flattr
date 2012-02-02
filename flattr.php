@@ -836,5 +836,6 @@ if (get_option('flattrss_autosubmit') && get_option('flattr_access_token')) {
  */
 function the_flattr_permalink()
 {
-	echo(get_the_flattr_permalink());
+    $flattr = new Flattr();
+	echo($flattr->getButton());
 }
