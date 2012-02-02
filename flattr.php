@@ -144,7 +144,7 @@ class Flattr
                         $retval["text"] = "connection established";
                         $retval["result"] = PASS;
                     } else {
-                        $retval["text"] = curl_error($ch);
+                        $retval["text"] = "curl connection error ".curl_error($ch);
                     }
                     curl_close ($ch) ;
                     break;
