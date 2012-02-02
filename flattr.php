@@ -829,3 +829,12 @@ function new_flattrss_autosubmit_action () {
 if (get_option('flattrss_autosubmit') && get_option('flattr_access_token')) {
     add_action('save_post','new_flattrss_autosubmit_action',9999);
 }
+
+/**
+ * prints the Flattr button
+ * Use this from your template
+ */
+function the_flattr_permalink()
+{
+	echo(get_the_flattr_permalink());
+}
