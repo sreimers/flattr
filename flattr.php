@@ -138,7 +138,6 @@ class Flattr
                     
                     $ch = curl_init ('https://api.flattr.com/rest/v2/users/der_michael');
                     curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true) ;
-                    curl_setopt ($ch, CURLOPT_CERTINFO, false) ;
                     curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false) ;
                     $res = curl_exec ($ch) ;
                     $res = json_decode($res);
