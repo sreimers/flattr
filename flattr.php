@@ -139,7 +139,6 @@ class Flattr
                     $ch = curl_init ('https://api.flattr.com/rest/v2/users/der_michael');
                     curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1) ;
                     $res = curl_exec ($ch) ;
-                    curl_close ($ch) ;
                     $res = json_decode($res);
                     if (isset($res->type)) {
                         $retval["text"] = "connection established";
@@ -147,6 +146,7 @@ class Flattr
                     } else {
                         $retval["text"] = curl_error($ch);
                     }
+                    curl_close ($ch) ;
                     break;
                 default :
                     break;
