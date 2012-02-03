@@ -663,12 +663,12 @@ $flattr = new Flattr();
 
 function flattr_feed_atom_item() {
     global $post;
-    echo '		<link rel="payment" href="'. static_flattr_url($post). '" type="text/html" />"'."\n";
+    echo '		<link rel="payment" href="'. static_flattr_url($post). '" type="text/html" />'."\n";
 }
 
 function flattr_feed_rss2_item() {
     global $post;
-    echo '	<atom:link rel="payment" href="'.static_flattr_url($post).'" type="text/html" />"'."\n";
+    echo '	<atom:link rel="payment" href="'.static_flattr_url($post).'" type="text/html" />'."\n";
 }
 
 function rss_ns() {
