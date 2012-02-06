@@ -34,6 +34,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 0.99.3 =
+* Fix: Feeds should now validate
+
 = 0.99.2 =
 * Fix: Wizard should work with PHP 5.2 now
 
