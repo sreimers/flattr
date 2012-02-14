@@ -1,5 +1,5 @@
 === Flattr ===
-Contributors: aphex3k, voxpelli
+Contributors: aphex3k, VoxPelli
 Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
 Requires at least: 3.3
