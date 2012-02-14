@@ -1,12 +1,12 @@
 === Flattr ===
-Contributors: aphex3k
+Contributors: aphex3k, voxpelli
 Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
 Requires at least: 3.3
 Tested up to: 3.3.1
 Stable tag: trunk
 
-This plugin allows you to easily add a Flattr button to your wordpress blog. The Button can appear on-site, as well as in your RSS/Atom Feed. Autosubmission will create a Flattr thing whenever you post a new entry.
+This plugin allows you to easily add a Flattr donation buttons to your blog and blog posts.
 
 == Description ==
 

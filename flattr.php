@@ -23,7 +23,12 @@ class Flattr
     const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
     
     const VERSION = "0.99";
-    
+
+    /**
+     * We should only create Flattr once - make it a singleton
+     */
+    protected static $instance;
+
     /**
      * Are we running on default or secure http?
      * @var String http:// or https:// protocol
@@ -33,7 +38,7 @@ class Flattr
     /**
      * construct and initialize Flattr object
      */
-    public function __construct() {
+    protected function __construct() {
         if ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'])
             $this->proto = 'https://';
         
@@ -44,7 +49,7 @@ class Flattr
         } else {
             $this->frontend();
         }
-        if (!$this->postMetaHandler) {
+        if (empty($this->postMetaHandler)) {
             require_once($this->getBasePath() . 'postmeta.php');
             $this->postMetaHandler = new Flattr_PostMeta();
         }
@@ -55,11 +60,10 @@ class Flattr
      */
     protected function frontend() {
         add_action('wp_enqueue_scripts', array($this, 'insert_script'));
-        
-        if (is_page() && get_option('flattr_aut_page'))
+
+        if (get_option('flattr_aut') || get_option('flattr_aut_page')) {
             add_action('the_content', array($this, 'injectIntoTheContent'), 32767);
-        if (get_option('flattr_aut'))
-            add_action('the_content', array($this, 'injectIntoTheContent'), 32767);
+        }
     }
     
     public function getBasePath()
@@ -86,7 +90,24 @@ class Flattr
         if (ini_get('allow_url_fopen') || function_exists('curl_init'))
             add_action('in_plugin_update_message-flattr/flattr.php', 'flattr_in_plugin_update_message');
     }
-    
+
+    public static function getInstance()
+    {
+        if (!isset(self::$instance))
+        {
+            try
+            {
+                self::$instance = new self();
+            }
+            catch(Exception $e)
+            {
+                Flattr_Logger::log($e->getMessage(), 'Flattr_View::getInstance');
+                self::$instance = false;
+            }
+        }
+        return self::$instance;
+    }
+
     public function ajax () {
         
         if (isset ($_GET["q"], $_GET["flattrJAX"])) {
@@ -370,8 +391,12 @@ class Flattr
      */
     public function injectIntoTheContent($content) {
         global $post;
-        
+
         if ( post_password_required($post->ID) ) {
+            return $content;
+        }
+
+        if ( ( is_page($post) && !get_option('flattr_aut_page') ) || !get_option('flattr_aut') ) {
             return $content;
         }
 
@@ -393,8 +418,11 @@ class Flattr
      * https://flattr.com/submit/auto?user_id=USERNAME&url=URL&title=TITLE&description=DESCRIPTION&language=LANGUAGE&tags=TAGS&hidden=HIDDEN&category=CATEGORY
      * @see http://blog.flattr.net/2011/11/url-auto-submit-documentation/
      */
-    public function getButton($type = "JavaScript") {
-        global $post;
+    public function getButton($type = "JavaScript", $post = null) {
+        if (!$post)
+        {
+            $post = $GLOBALS['post'];
+        }
 
         if (get_post_meta($post->ID, '_flattr_btn_disabled', true))
         {
@@ -429,27 +457,40 @@ class Flattr
                 'user_id'	=> $flattr_uid,
                 'url'		=> get_permalink(),
                 'compact'	=> (get_option('flattr_compact', false) ? true : false ),
-                'hide'		=> $hidden,
+                'hidden'	=> $hidden,
                 'language'	=> $selectedLanguage,
                 'category'	=> $selectedCategory,
                 'title'		=> strip_tags(get_the_title()),
-                'body'		=> strip_tags(preg_replace('/\<br\s*\/?\>/i', "\n", $post->post_content)),
-                'tag'		=> strip_tags(get_the_tag_list('', ',', ''))
+                'description'		=> strip_tags(preg_replace('/\<br\s*\/?\>/i', "\n", $post->post_content)),
+                'tags'		=> strip_tags(get_the_tag_list('', ',', ''))
 
         );
 
+        if (empty($buttonData['description']) && !in_array($buttonData['category'], array('images', 'video', 'audio')))
+        {
+                $buttonData['description'] = get_bloginfo('description');
+
+                if (empty($buttonData['description']) || strlen($buttonData['description']) < 5)
+                {
+                        $buttonData['description'] = $buttonData['title'];
+                }
+        }
+
+
         if (isset($buttonData['user_id'], $buttonData['url'], $buttonData['language'], $buttonData['category']))
         {
-                $retval;
-                switch (get_option(flattr_button_style)) {
+                switch (empty($type) ? get_option(flattr_button_style) : $type) {
                     case "text":
                         $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank">Flattr this!</a>';
                         break;
                     case "image":
                         $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank"><img src="'. get_bloginfo('wpurl') . '/wp-content/plugins/flattr/img/flattr-badge-large.png" alt="flattr this!"/></a>';
                         break;
+                    case "autosubmitUrl":
+                        $retval = $this->getAutosubmitUrl($buttonData);
+                        break;
                     default:
-                        $retval = $this->getButtonCode($buttonData);;
+                        $retval = $this->getButtonCode($buttonData);
                 }
                 return $retval;
         }
@@ -464,12 +505,12 @@ class Flattr
                     $params['category']
             );
 
-            if (!empty($params['tag']))
+            if (!empty($params['tags']))
             {
-                    $rev .= 'tags:'. htmlspecialchars($params['tag']) .';';
+                    $rev .= 'tags:'. htmlspecialchars($params['tags']) .';';
             }
 
-            if ($params['hide'])
+            if ($params['hidden'])
             {
                     $rev .= 'hidden:1;';
             }
@@ -479,24 +520,23 @@ class Flattr
                     $rev .= 'button:compact;';
             }
 
-            if (empty($params['body']) && !in_array($params['category'], array('images', 'video', 'audio')))
-            {
-                    $params['body'] = get_bloginfo('description');
-
-                    if (empty($params['body']) || strlen($params['body']) < 5)
-                    {
-                            $params['body'] = $params['title'];
-                    }
-            }
-
             return sprintf('<a class="FlattrButton" style="display:none;" href="%s" title="%s" rev="%s">%s</a>',
                     $params['url'],
                     htmlspecialchars($params['title']),
                     $rev,
-                    htmlspecialchars($params['body'])
+                    htmlspecialchars($params['description'])
             );
     }
-    
+
+    function getAutosubmitUrl($params) {
+        if (isset($params['compact']))
+        {
+            unset($params['compact']);
+        }
+        $params = array_filter($params);
+        return 'https://flattr.com/submit/auto?' . http_build_query($params);
+    }
+
     protected static $languages;
     public static function getLanguages() {
         if (empty(self::$languages)) {
@@ -658,17 +698,14 @@ if(get_option('flattrss_button_enabled')) {
     add_action('rss2_ns', 'rss_ns');
 }
 
-$flattr = new Flattr();
-
-
 function flattr_feed_atom_item() {
     global $post;
-    echo '		<link rel="payment" href="'. static_flattr_url($post). '" type="text/html" />'."\n";
+    echo '		<link rel="payment" href="' . htmlspecialchars(Flattr::getInstance()->getButton("autosubmitUrl", $post)) . '" type="text/html" />'."\n";
 }
 
 function flattr_feed_rss2_item() {
     global $post;
-    echo '	<atom:link rel="payment" href="'.static_flattr_url($post).'" type="text/html" />'."\n";
+    echo '	<atom:link rel="payment" href="' . htmlspecialchars(Flattr::getInstance()->getButton("autosubmitUrl", $post)) . '" type="text/html" />'."\n";
 }
 
 function rss_ns() {
@@ -836,6 +873,8 @@ if (get_option('flattrss_autosubmit') && get_option('flattr_access_token')) {
  */
 function the_flattr_permalink()
 {
-    $flattr = new Flattr();
-	echo($flattr->getButton());
+    echo Flattr::getInstance()->getButton();
 }
+
+// Make sure that the flattr object is ran at least once
+$flattr = Flattr::getInstance();
