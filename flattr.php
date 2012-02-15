@@ -278,6 +278,7 @@ class Flattr
         add_option('flattr_lng', 'en_GB');
         add_option('flattr_aut', true);
         add_option('flattr_aut_page', true);
+        add_option('flattr_atags', 'blog');
         add_option('flattr_cat', 'text');
         add_option('flattr_top', false); 
         add_option('flattr_compact', false); 
@@ -324,6 +325,7 @@ class Flattr
         register_setting('flattr-settings-group', 'flattr_post_types');
         register_setting('flattr-settings-group', 'flattr_uid');
         register_setting('flattr-settings-group', 'flattr_lng');
+        register_setting('flattr-settings-group', 'flattr_atags');
         register_setting('flattr-settings-group', 'flattr_cat');
         register_setting('flattr-settings-group', 'flattr_compact');
         register_setting('flattr-settings-group', 'flattr_top');
@@ -400,7 +402,7 @@ class Flattr
             return $content;
         }
 
-        if (in_array(get_post_type(), get_option('flattr_post_types')) && !is_feed()) {
+        if (in_array(get_post_type(), (array)get_option('flattr_post_types', array())) && !is_feed()) {
             $button = $this->getButton();
             $button = '<p class="wp-flattr-button">'.$button.'</p>';
 
@@ -441,7 +443,8 @@ class Flattr
                 $selectedLanguage = (get_user_meta(get_the_author_meta('ID'), "user_flattr_lng", true)!="")? get_user_meta(get_the_author_meta('ID'), "user_flattr_lng", true): get_option('flattr_lng');
         }
 
-        
+        $additionalTags = get_option('flattr_atags', 'blog');
+
         $selectedCategory = get_post_meta($post->ID, '_flattr_post_category', true);
         if (empty($selectedCategory)) {
                 $selectedCategory = (get_option('user_based_flattr_buttons')&& get_user_meta(get_the_author_meta('ID'), "user_flattr_cat", true)!="")? get_user_meta(get_the_author_meta('ID'), "user_flattr_cat", true): get_option('flattr_cat');
@@ -462,7 +465,7 @@ class Flattr
                 'category'	=> $selectedCategory,
                 'title'		=> strip_tags(get_the_title()),
                 'description'		=> strip_tags(preg_replace('/\<br\s*\/?\>/i', "\n", $post->post_content)),
-                'tags'		=> strip_tags(get_the_tag_list('', ',', ''))
+                'tags'		=> trim(strip_tags(get_the_tag_list('', ',', '')) . ',' . $additionalTags, ', ')
 
         );
 
@@ -666,7 +669,7 @@ function flattr_post2rss($content) {
     global $post;
 
     $flattr = "";
-    $flattr_post_types = get_option('flattr_post_types');
+    $flattr_post_types = (array)get_option('flattr_post_types', array());
     
     $meta = get_post_meta($post->ID, '_flattr_btn_disable');
     
@@ -736,9 +739,11 @@ function new_flattrss_autosubmit_action () {
             }
         }
 
-        if (trim($tags) == "") {
-            $tags = "blog";
+        $additionalTags = get_option('flattr_atags', 'blog');
+        if (!empty($additionalTags)) {
+            $tags .= ',' . $additionalTags;
         }
+        $tags = trim($tags, ', ');
 
         $category = "text";
         if (get_option('flattr_cat')!= "") {

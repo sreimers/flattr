@@ -2,7 +2,7 @@
 <?php wp_nonce_field(); ?>
     <table>
 <tr>
-    <th><?php _e('Your Flattr account name'); ?></th>
+    <th><?php _e('Your Flattr Username'); ?></th>
     <td>
         <input name="user_flattr_uid" type="text" value="<?php echo(get_user_meta(get_current_user_id( ), "user_flattr_uid", true)); ?>" />
     </td>
@@ -53,7 +53,7 @@
 
             if (!is_null($key) && !is_null($sec)) {
 
-                include_once __DIR__.'/../flattr_client.php';
+                include_once dirname(__FILE__).'/../flattr_client.php';
 
                 $client = new OAuth2Client(array_merge(array(
                     'client_id'         => $key,

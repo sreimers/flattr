@@ -1,7 +1,6 @@
 </table>
 <p class="submit">
     <input type="submit" class="button-primary" value="Save Changes" />
-    <input type="reset" class="button" value="Reset" />
 </p>
 </form>
 </div>

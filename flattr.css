@@ -23,8 +23,9 @@ td input {
     margin-right: 8px;
 }
 
-.flattr-wrap table th {
-    border-bottom: 16px solid transparent;
+.flattr-wrap table.form-table li iframe,
+.flattr-wrap table.form-table li img {
+    vertical-align: middle;
 }
 
 .flattr-wrap span.inactive {

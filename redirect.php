@@ -27,6 +27,12 @@ if (isset ($_GET['id'])&&
         }
     }
 
+    $additionalTags = get_option('flattr_atags', 'blog');
+    if (!empty($additionalTags)) {
+        $tags .= ',' . $additionalTags;
+    }
+    $tags = trim($tags, ', ');
+
     $category = get_post_meta($post['ID'], '_flattr_post_category', true);
     if (empty($category)) {
         $category = (get_option('user_based_flattr_buttons')&& get_user_meta(get_the_author_meta('ID'), "user_flattr_cat", true)!="")? get_user_meta(get_the_author_meta('ID'), "user_flattr_cat", true): get_option('flattr_cat');
