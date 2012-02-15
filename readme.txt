@@ -21,18 +21,19 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 1. Upload the folder 'flattr' to your server in the folder '/wp-content/plugins/'
 2. Go to the WordPress control panel and find the 'Plugins' section
 3. Activate the plugin 'Flattr'
-4. Go to the 'Options' section and authrize your blog against flattr.com
-5. Select your default category (which usually would be 'text' if you have a normal blog), select your default language and type in your Flattr user ID (your user ID can be found on your dashboard on http://flattr.com/ )
-6. If you want the Flattr button to be automagically included at the end of your posts, leave the checkbox checked
-7. If you want to add the Flattr button manually in your theme, uncheck the checkbox and use the following code snippet:
-8. When writing or editing a blog post you have the ability to select category and language for this specific blog post.
-
-`<?php the_flattr_permalink(); ?>`
-
-8. Live long and prosper. :)
+4. Select your default category (which usually would be 'text' if you have a normal blog), select your default language and type in your Flattr username
+5. When writing or editing a blog post you have the ability to select category and language for this specific blog post.
+6. Live long and prosper. :)
 
 
 == Changelog ==
+
+= 1.0.0 =
+* New Feature: Add additional tags to Flattr buttons to make your things appear better in the Flattr catalog. Defaults to add the "blog" tag.
+* Fix: The payment links in RSS/Atom feeds will now point directly to Flattr.com to make it easier for clients to detect flattrable posts
+* Fix: Compatibility with WP_DEBUG - many PHP warnings and notices has been fixed
+* Fix: Some adjustments to better support PHP versions prior to 5.3 has been made
+* Fix: The plugin has been stable for a long time – it's time to have the version number reflect that - welcome to 1.0.0!
 
 = 0.99.3 =
 * Fix: Feeds should now validate
