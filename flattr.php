@@ -2,11 +2,11 @@
 /**
  * @package Flattr
  * @author Michael Henke
- * @version 1.0.0
+ * @version 1.0.1
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 1.0.0
+Version: 1.0.1
 Author: Michael Henke
 Author URI: http://www.codingmerc.com/tags/flattr/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -22,7 +22,7 @@ class Flattr
      */
     const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
     
-    const VERSION = "1.0.0";
+    const VERSION = "1.0.1";
 
     /**
      * We should only create Flattr once - make it a singleton
@@ -420,7 +420,7 @@ class Flattr
      * https://flattr.com/submit/auto?user_id=USERNAME&url=URL&title=TITLE&description=DESCRIPTION&language=LANGUAGE&tags=TAGS&hidden=HIDDEN&category=CATEGORY
      * @see http://blog.flattr.net/2011/11/url-auto-submit-documentation/
      */
-    public function getButton($type = "JavaScript", $post = null) {
+    public function getButton($type = null, $post = null) {
         if (!$post)
         {
             $post = $GLOBALS['post'];
@@ -482,7 +482,7 @@ class Flattr
 
         if (isset($buttonData['user_id'], $buttonData['url'], $buttonData['language'], $buttonData['category']))
         {
-                switch (empty($type) ? get_option(flattr_button_style) : $type) {
+                switch (empty($type) ? get_option('flattr_button_style') : $type) {
                     case "text":
                         $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank">Flattr this!</a>';
                         break;

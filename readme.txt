@@ -28,6 +28,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 1.0.1 =
+* Fix: Button type wasn't respected
+
 = 1.0.0 =
 * New Feature: Add additional tags to Flattr buttons to make your things appear better in the Flattr catalog. Defaults to add the "blog" tag.
 * Fix: The payment links in RSS/Atom feeds will now point directly to Flattr.com to make it easier for clients to detect flattrable posts
