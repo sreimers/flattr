@@ -28,6 +28,9 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 1.0.2 =
+* Fix: "Include in RSS/Atom feeds" setting wouldn't save
+
 = 1.0.1 =
 * Fix: Button type wasn't respected
 

@@ -2,11 +2,11 @@
 /**
  * @package Flattr
  * @author Michael Henke
- * @version 1.0.1
+ * @version 1.0.2
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 1.0.1
+Version: 1.0.2
 Author: Michael Henke
 Author URI: http://www.codingmerc.com/tags/flattr/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -22,7 +22,7 @@ class Flattr
      */
     const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
     
-    const VERSION = "1.0.1";
+    const VERSION = "1.0.2";
 
     /**
      * We should only create Flattr once - make it a singleton
@@ -333,6 +333,7 @@ class Flattr
         register_setting('flattr-settings-group', 'flattr_button_style');
         register_setting('flattr-settings-group', 'flattrss_custom_image_url');
         register_setting('flattr-settings-group', 'user_based_flattr_buttons');
+        register_setting('flattr-settings-group', 'flattrss_button_enabled');
         register_setting('flattr-settings-group', 'flattr_aut_page');
         register_setting('flattr-settings-group', 'flattr_aut');
     }
