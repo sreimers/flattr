@@ -59,7 +59,9 @@ class Flattr
      * prepare Frontend
      */
     protected function frontend() {
-        add_action('wp_enqueue_scripts', array($this, 'insert_script'));
+        if (!in_array(get_option('flattr_button_style'), array('text', 'image'))) {
+            add_action('wp_print_footer_scripts', array($this, 'insert_script'));
+        }
 
         if (get_option('flattr_aut') || get_option('flattr_aut_page')) {
             add_action('the_content', array($this, 'injectIntoTheContent'), 32767);
@@ -80,8 +82,8 @@ class Flattr
      * prepare Dashboard
      */
     protected function backend() {
+        add_action('wp_print_footer_scripts', array($this, 'insert_script'));
         add_action('admin_init', array($this, 'ajax'));
-        add_action('admin_init', array($this, 'insert_script'));
         add_action('admin_init', array($this, 'insert_wizard'));
         add_action('admin_init', array( $this, 'register_settings') );
         add_action('admin_init', array( $this, 'update_user_meta') );
@@ -290,14 +292,16 @@ class Flattr
         add_option('flattrss_button_enabled', true);
     }
 
-    /**
-     * Insert Flattr script between <head></head> tags using Wordpress script hooks
-     * @see http://codex.wordpress.org/Function_Reference/wp_enqueue_script
-     */
     public function insert_script() {
-        wp_deregister_script( 'flattrscript' );
-        wp_register_script( 'flattrscript', $this->proto . self::API_SCRIPT);
-        wp_enqueue_script( 'flattrscript' );
+        ?><script type="text/javascript">
+          (function() {
+            var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = '<?php echo $this->proto . self::API_SCRIPT; ?>';
+            t.parentNode.insertBefore(s, t);
+          })();
+        </script><?php
     }
     
     public function insert_wizard() {
