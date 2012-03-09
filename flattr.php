@@ -393,6 +393,8 @@ class Flattr
      * @return string 
      */
     public function injectIntoTheContent($content) {
+        static $processingPosts = array();
+
         global $post;
 
         if ( post_password_required($post->ID) ) {
@@ -404,6 +406,11 @@ class Flattr
         }
 
         if (in_array(get_post_type(), (array)get_option('flattr_post_types', array())) && !is_feed()) {
+            if (isset($processingPosts[$post->ID])) {
+                return $content;
+            } else {
+                $processingPosts[$post->ID] = true;
+            }
             $button = $this->getButton();
             $button = '<p class="wp-flattr-button">'.$button.'</p>';
 
@@ -413,6 +420,7 @@ class Flattr
             else {
                     $content = $content . $button;
             }
+            unset($processingPosts[$post->ID]);
         }
         return $content;
     }	
@@ -456,6 +464,12 @@ class Flattr
                 $hidden = get_option('flattr_hide', false);
         }
 
+        $description = get_the_content('');
+        $description = strip_shortcodes( $description );
+        $description = apply_filters('the_content', $description);
+        $description = str_replace(']]>', ']]&gt;', $description);
+        $description = wp_trim_words( $description, 30, '...' );
+
         $buttonData = array(
 
                 'user_id'	=> $flattr_uid,
@@ -465,7 +479,7 @@ class Flattr
                 'language'	=> $selectedLanguage,
                 'category'	=> $selectedCategory,
                 'title'		=> strip_tags(get_the_title()),
-                'description'		=> strip_tags(preg_replace('/\<br\s*\/?\>/i', "\n", $post->post_content)),
+                'description' => $description,
                 'tags'		=> trim(strip_tags(get_the_tag_list('', ',', '')) . ',' . $additionalTags, ', ')
 
         );
