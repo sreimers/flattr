@@ -28,6 +28,12 @@ Flattr solves this issue. When you're registered to flattr, you pay a small mont
 
 == Changelog ==
 
+= 1.1.0 =
+* New Feature: Added support for WordPress uninstall feature. To use it you deactivate and delete the plugin from the plugin list.
+* Fix: Descriptions sent to Flattr are now assembled in a totaly new way as a custom kind of excerpts that are limited to maximum 30 words
+* Fix: The javascript loaded from Flattr.com is now loaded asynchronously
+* Fix: The javascript loaded from Flattr.com is now only loaded in the frontend when dynamic buttons are used
+
 = 1.0.2 =
 * Fix: "Include in RSS/Atom feeds" setting wouldn't save
 
