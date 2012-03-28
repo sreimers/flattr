@@ -132,6 +132,13 @@
 </tr>
 
 <tr>
+    <th><?php _e('Enable the button popout'); ?></th>
+    <td>
+        <input <?php if (get_option('flattr_popout_enabled', 'true')) { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_popout_enabled" value="true" />
+    </td>
+</tr>
+
+<tr>
 <th>Custom Image URL</th>
 <td><input type="text" name="flattrss_custom_image_url" size="70" value="<?php echo esc_attr(get_option('flattrss_custom_image_url'));?>"/><br/>
     <?php if ( get_option('flattrss_custom_image_url') != get_bloginfo('wpurl') . '/wp-content/plugins/flattr/img/flattr-badge-large.png') { ?>
