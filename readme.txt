@@ -59,6 +59,7 @@ Flattr buttons now detectable by browsers, site itself can now be flattred and a
 * New Feature: The payment links in RSS/Atom can now be added without adding the graphical buttons and are now on by default
 * New Feature: Payment links are now not only included in feed entries - they are now also by default included in the head-tag of entry pages which is usable for eg. browser extensions to detect the existence of a flattr button.
 * New Feature: The site itself can now be become flattrable - both feeds and the frontpage will by default in new installs have a payment links for the site itself. Existing pages needs to activate the "Make frontpage flattrable" option.
+* New Feature: Added a widget with a Flattr button for the entire site.
 * New Feature: Added a [flattr] shortcode for easy inclusion of Flattr buttons in posts and pages
 * Fix: No longer prevents caching due to needless session initialization
 * Fix: Settings that can be overriden by a user setting is now by default not saved in a post but rather the site setting or user setting is instead picked when the button is viewed. This means that user settings for content type and language will now be respected.
