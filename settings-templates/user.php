@@ -42,58 +42,66 @@
 </td>
 </tr>
 
-<tr>
-    <th><?php _e('Authorize for Autosubmit'); ?></th>
-    <td>
-        <?php
-            $key = get_option('flattrss_api_key', true);
-            $sec = get_option('flattrss_api_secret', true);
+<?php
+    $key = get_option('flattrss_api_key', null);
+    $sec = get_option('flattrss_api_secret', null);
 
-            $callback = urlencode(home_url()."/wp-admin/admin.php?page=flattr/flattr.php");
+    $callback = urlencode(home_url()."/wp-admin/admin.php?page=flattr/flattr.php");
 
-            if (!is_null($key) && !is_null($sec)) {
+    if (!empty($key) && !empty($sec)) {
 
-                include_once dirname(__FILE__).'/../flattr_client.php';
+        include_once dirname(__FILE__).'/../flattr_client.php';
 
-                $client = new OAuth2Client(array_merge(array(
-                    'client_id'         => $key,
-                    'client_secret'     => $sec,
-                    'base_url'          => 'https://api.flattr.com/rest/v2',
-                    'site_url'          => 'https://flattr.com',
-                    'authorize_url'     => 'https://flattr.com/oauth/authorize',
-                    'access_token_url'  => 'https://flattr.com/oauth/token',
+        $client = new OAuth2Client(array_merge(array(
+            'client_id'         => $key,
+            'client_secret'     => $sec,
+            'base_url'          => 'https://api.flattr.com/rest/v2',
+            'site_url'          => 'https://flattr.com',
+            'authorize_url'     => 'https://flattr.com/oauth/authorize',
+            'access_token_url'  => 'https://flattr.com/oauth/token',
 
-                    'redirect_uri'      => $callback,
-                    'scopes'            => 'thing+flattr',
-                    'token_param_name'  => 'Bearer',
-                    'response_type'     => 'code',
-                    'grant_type'        => 'authorization_code',
-                    'access_token'      => null,
-                    'refresh_token'     => null,
-                    'code'              => null,
-                    'developer_mode'    => false
-                ))); 
+            'redirect_uri'      => $callback,
+            'scopes'            => 'thing+flattr',
+            'token_param_name'  => 'Bearer',
+            'response_type'     => 'code',
+            'grant_type'        => 'authorization_code',
+            'access_token'      => null,
+            'refresh_token'     => null,
+            'code'              => null,
+            'developer_mode'    => false
+        ))); 
 
-                try {
-                    $url = $client->authorizeUrl();
-                    $text = "(re-)authorize";
+        try {
+            $url = $client->authorizeUrl();
+            $text = "(re-)authorize";
 
-                } catch (Exception $e) {
-                    $text = "The admin needs to create and authorize a Flattr App first.";
+        } catch (Exception $e) {
+            $text = false;
 
-                }
-            } else {
-                $text = "DEACTIVATED";
-            }
-        ?>
-        <a href="<?=$url;?>"><?=$text;?></a>
-    </td>
-</tr>
+        }
+    } else {
+        $text = false;
+    }
+?>
+<?php if (!empty($text)): ?>
+    <tr>
+        <th><?php _e('Authorize for Autosubmit'); ?></th>
+        <td>
+            <?php if (!empty($url)): ?>
+                <a href="<?php echo $url; ?>"><?php echo $text; ?></a>
+            <?php else: ?>
+                <?php echo $text; ?>
+            <?php endif; ?>
+        </td>
+    </tr>
+<?php endif; ?>
 
 <?php
     $token = get_user_meta( get_current_user_id() , "user_flattrss_api_oauth_token", true);
-    
-    if (!empty($token)) {
+
+    if (empty($token)) {
+        $client = false;
+    } else {
         $client = new OAuth2Client( array_merge(array(
             'client_id'         => $key,
             'client_secret'     => $sec,
@@ -116,9 +124,9 @@
     }
     
     try {
-        $user = $client->getParsed('/user');
+        $user = ($client ? $client->getParsed('/user') : false);
         
-        if (!isset($user['error'])) {
+        if ($user && !isset($user['error'])) {
 ?>
 <tr>
     <th><?php _e('Authorized User'); ?></th>

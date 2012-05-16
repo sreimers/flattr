@@ -82,7 +82,14 @@
                     echo "<li><input name=\"flattr_post_types[]\" value=\"$type\" type=\"checkbox\"$selected/>&nbsp;$type</li>";
                 }
             ?></ul>
-            <span class="description"><?php _e('Appends Flattr Button only to selected post types.'); ?></span>
+            <span class="description"><?php _e('Only the selected post types are made flattrable.'); ?></span>
+        </td>
+    </tr>
+
+    <tr>
+        <th scope="row"><?php _e('Make frontpage flattrable'); ?></th>
+        <td>
+            <input name="flattr_global_button" type="checkbox" <?php if(get_option('flattr_global_button', false)) {echo "checked";}?> />
         </td>
     </tr>
 
@@ -97,16 +104,11 @@
         <ul>
             <li>
                 <input type="radio" name="flattr_button_style" value="js"<?=(get_option('flattr_button_style')=="js")?" checked":"";?>/>
-                <script type="text/javascript">
-                    var flattr_uid = "der_michael";
-                    var flattr_btn = "<?=get_option('flattr_compact')?"compact":"";?>";
-                    var flattr_tle = "Wordpress Flattr plugin";
-                    var flattr_dsc = "Give your readers the opportunity to Flattr your effort. See http://wordpress.org/extend/plugins/flattr/ for details.";
-                    var flattr_cat = "software";
-                    var flattr_tag = "wordpress,plugin,flattr,rss";
-                    var flattr_url = "http://wordpress.org/extend/plugins/flattr/";
-                </script>
-                <script src="<?php echo (isset($_SERVER['HTTPS'])) ? 'https' : 'http'; ?>://api.flattr.com/button/load.js" type="text/javascript"></script>
+                <?php Flattr::getInstance()->admin_script(); ?>
+                <a class="FlattrButton" href="http://wordpress.org/extend/plugins/flattr/" title="Wordpress Flattr plugin" lang="en_GB"
+                    rel="flattr;uid:der_michael;category:software;tags:wordpress,plugin,flattr,rss;<?=get_option('flattr_compact')?"button:compact;":"";?>">
+                    Give your readers the opportunity to Flattr your effort. See http://wordpress.org/extend/plugins/flattr/ for details.
+                </a>
                 <span class="description"><?php _e('Dynamic javascript version'); ?></span>
             </li>
             <li>
@@ -158,10 +160,26 @@
 </tr>
 
 <tr>
-    <th scope="row"><?php _e('Include in RSS/Atom feeds'); ?></th>
+    <th scope="row"><?php _e('Include graphical button in RSS/Atom feeds'); ?></th>
     <td>
         <input name="flattrss_button_enabled" type="checkbox" <?php if(get_option('flattrss_button_enabled')) {echo "checked";}?> />
-        <span class="description">If selected, both static graphical Flattr buttons and <a href="http://developers.flattr.net/feed/">Flattr feed links</a> will be included in the RSS/Atom feeds.</span>
+        <span class="description">If selected static graphical Flattr buttons will be included in the RSS/Atom feeds.</span>
+    </td>
+</tr>
+
+<tr>
+    <th scope="row"><?php _e('Include payment metadata in RSS/Atom feeds'); ?></th>
+    <td>
+        <input name="flattrss_relpayment_enabled" type="checkbox" <?php if(get_option('flattrss_relpayment_enabled')) {echo "checked";}?> />
+        <span class="description"><a href="http://developers.flattr.net/feed/">Flattr feed links</a> will be included in the RSS/Atom feeds to allow feed readers to identify flattrable stuff and make it easy to flattr it.</span>
+    </td>
+</tr>
+
+<tr>
+    <th scope="row"><?php _e('Include payment metadata in HTML'); ?></th>
+    <td>
+        <input name="flattr_relpayment_enabled" type="checkbox" <?php if(get_option('flattr_relpayment_enabled')) {echo "checked";}?> />
+        <span class="description">Rel-payment metadata similar to the <a href="http://developers.flattr.net/feed/">Flattr feed links</a> will be included in HTML pages. This enables eg. browser extensions to identify the Flattr button of a page</span>
     </td>
 </tr>
 

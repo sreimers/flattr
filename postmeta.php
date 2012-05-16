@@ -20,10 +20,10 @@ class Flattr_PostMeta
 			return $id;
 		}
 	
-		if ( isset($_POST['flattr_post_language']) ) {
+		if ( isset($_POST['flattr_post_language']) && $_POST['flattr_post_language'] != '0' ) {
 			add_post_meta($id, '_flattr_post_language', $_POST['flattr_post_language'], true) or update_post_meta($id, '_flattr_post_language', $_POST['flattr_post_language']);
 		}
-		if ( isset($_POST['flattr_post_category']) ) {
+		if ( isset($_POST['flattr_post_category']) && $_POST['flattr_post_category'] != '0' ) {
 			add_post_meta($id, '_flattr_post_category', $_POST['flattr_post_category'], true) or update_post_meta($id, '_flattr_post_category', $_POST['flattr_post_category']);
 		}
 		if ( isset($_POST['flattr_post_hidden']) ) {
@@ -31,6 +31,9 @@ class Flattr_PostMeta
 		}
 		if ( isset($_POST['flattr_btn_disabled']) ) {
 			add_post_meta($id, '_flattr_btn_disabled',  $_POST['flattr_btn_disabled'],  true) or update_post_meta($id, '_flattr_btn_disabled',  $_POST['flattr_btn_disabled']);
+		}
+		if ( isset($_POST['flattr_post_customurl']) ) {
+			add_post_meta($id, '_flattr_post_customurl',  $_POST['flattr_post_customurl'],  true) or update_post_meta($id, '_flattr_post_customurl',  $_POST['flattr_post_customurl']);
 		}
 		
 		return true;
@@ -73,13 +76,13 @@ class Flattr_PostMeta
 		$selectedLanguage = get_post_meta($post->ID, '_flattr_post_language', true);
 		if (empty($selectedLanguage))
 		{
-			$selectedLanguage = get_option('flattr_lng');
+			$selectedLanguage = false;
 		}
 
 		$selectedCategory = get_post_meta($post->ID, '_flattr_post_category', true);
 		if (empty($selectedCategory))
 		{
-			$selectedCategory = get_option('flattr_cat');
+			$selectedCategory = false;
 		}
 
 		$hidden = get_post_meta($post->ID, '_flattr_post_hidden',	true);
@@ -93,6 +96,8 @@ class Flattr_PostMeta
 		{
 			$btnDisabled = get_option('flattr_disable', 0);
 		}
+
+		$customUrl = get_post_meta($post->ID, '_flattr_post_customurl', true);
 		
 		include('postmeta-template.php');
 	}

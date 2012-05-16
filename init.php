@@ -57,8 +57,6 @@ if ( isset($_GET['page'], $_GET['code']) && !isset($_GET['flattrJAX']) ) {
                 $user = $client->getParsed('/user');
 
                 if (!isset($user['error'])) {
-                    require_once( ABSPATH . WPINC . '/registration.php');
-
                     update_user_meta( get_current_user_id(), "user_flattrss_api_oauth_token", $access_token );
 
                     if (current_user_can('activate_plugins')) {
