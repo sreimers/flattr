@@ -185,12 +185,12 @@
 
 <tr>
     <th scope="row"><?php _e('Insert Flattr button into posts automagically'); ?></th>
-    <td><input <?php if (get_option('flattr_aut', 'off') == 'on') { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_aut" value="on" /></td>
+    <td><input <?php if (get_option('flattr_aut')) { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_aut" value="on" /></td>
 </tr>
 
 <tr>
     <th scope="row"><?php _e('Insert Flattr button into pages automagically'); ?></th>
-    <td><input <?php if (get_option('flattr_aut_page', 'off') == 'on') { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_aut_page" value="on" /></td>
+    <td><input <?php if (get_option('flattr_aut_page')) { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_aut_page" value="on" /></td>
 </tr>
 <tr>
     <th scope="row" colspan="2">You can use <code>&lt;?php the_flattr_permalink() ?&gt;</code> in your template/theme to insert a flattr button

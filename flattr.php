@@ -2,11 +2,11 @@
 /**
  * @package Flattr
  * @author Michael Henke
- * @version 1.2.0b1
+ * @version 1.2.0b2
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 1.2.0b1
+Version: 1.2.0b2
 Author: Michael Henke
 Author URI: http://www.codingmerc.com/tags/flattr/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -20,7 +20,7 @@ class Flattr
      */
     const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
-    const VERSION = "1.2.0b1";
+    const VERSION = "1.2.0b2";
 
     /**
      * We should only create Flattr once - make it a singleton
@@ -843,7 +843,7 @@ function flattr_feed_atom_item() {
 
 function flattr_feed_rss2_item() {
     global $post;
-    if (!get_option('flattrss_relpayment_enabled') && in_array(get_post_type($post), (array)get_option('flattr_post_types', array()))) {
+    if (get_option('flattrss_relpayment_enabled') && in_array(get_post_type($post), (array)get_option('flattr_post_types', array()))) {
         echo '	<atom:link rel="payment" title="Flattr this!" href="' . esc_attr(Flattr::getInstance()->getButton("autosubmitUrl", $post)) . '" type="text/html" />'."\n";
     }
 }
