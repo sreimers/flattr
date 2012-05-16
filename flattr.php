@@ -2,11 +2,11 @@
 /**
  * @package Flattr
  * @author Michael Henke
- * @version 1.2.0b2
+ * @version 1.2.0b3
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 1.2.0b2
+Version: 1.2.0b3
 Author: Michael Henke
 Author URI: http://www.codingmerc.com/tags/flattr/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -20,7 +20,7 @@ class Flattr
      */
     const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
-    const VERSION = "1.2.0b2";
+    const VERSION = "1.2.0b3";
 
     /**
      * We should only create Flattr once - make it a singleton
@@ -442,8 +442,8 @@ class Flattr
             return;
         }
 
-        if (is_front_page() && get_option('flattr_global_button')) {
-            $url = $this->getGlobalButton('autosubmitUrl');
+        if (is_front_page()) {
+            $url = get_option('flattr_global_button') ? $this->getGlobalButton('autosubmitUrl') : false;
         } else if (in_array(get_post_type(), (array)get_option('flattr_post_types', array()))) {
             $url = $this->getButton('autosubmitUrl');
         }
@@ -504,7 +504,7 @@ class Flattr
         $buttonData = array(
             'user_id'     => $flattr_uid,
             'popout'      => (get_option('flattr_popout_enabled', true) ? 1 : 0 ),
-            'url'         => site_url(),
+            'url'         => site_url('/'),
             'compact'     => (get_option('flattr_compact', false) ? true : false ),
             'hidden'      => get_option('flattr_hide'),
             'language'    => str_replace('-', '_', get_bloginfo('language')),
