@@ -184,6 +184,14 @@
 </tr>
 
 <tr>
+    <th scope="row"><?php _e('Payment metadata in feed not working?'); ?></th>
+    <td>
+        <input name="flattrss_relpayment_escaping_disabled" type="checkbox" <?php if(get_option('flattrss_relpayment_escaping_disabled')) {echo "checked";}?> />
+        <span class="description">This is a fix for a very small collection of blogs that for some mysterious reason are getting the payment metadata double escaped in their feeds. Until we find out why these blogs has this problem we provide this solution instead to make the experience for these bloggers as good as possible.<br/> <strong>WARNING:</strong> Activating this when metadata isn't broken will break your feeds!</span>
+    </td>
+</tr>
+
+<tr>
     <th scope="row"><?php _e('Insert Flattr button into posts automagically'); ?></th>
     <td><input <?php if (get_option('flattr_aut')) { echo(' checked="checked"'); } ?> type="checkbox" name="flattr_aut" value="on" /></td>
 </tr>

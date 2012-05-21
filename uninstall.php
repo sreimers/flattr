@@ -21,10 +21,10 @@ if ( defined(WP_UNINSTALL_PLUGIN) )
 		'flattrss_button_enabled',
 		'flattrss_relpayment_enabled',
 		'flattr_relpayment_enabled',
+		'flattrss_relpayment_escaping_disabled',
 		// From other places
 		'flattrss_api_key',
 		'flattrss_api_secret',
-		'flattrwidget',
 		'flattr_access_token',
 	);
 

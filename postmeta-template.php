@@ -45,5 +45,5 @@
 	<label for="flattr_post_hidden">Hide post from listings on flattr.com</label>
 	<br />
 
-	<label for="flattr_post_customurl">Custom URL</label>
+	<label for="flattr_post_customurl">Custom URL to be flattred</label>
 	<input type="text" name="flattr_post_customurl" id="flattr_post_customurl" value="<?php echo $customUrl; ?>" />

@@ -288,6 +288,7 @@ class Flattr
         add_option('flattrss_button_enabled', true);
         add_option('flattrss_relpayment_enabled', true);
         add_option('flattr_relpayment_enabled', true);
+        add_option('flattrss_relpayment_escaping_disabled', false);
     }
 
     public function attsNormalize( $value ) {
@@ -386,6 +387,7 @@ class Flattr
         register_setting('flattr-settings-group', 'flattrss_button_enabled');
         register_setting('flattr-settings-group', 'flattrss_relpayment_enabled');
         register_setting('flattr-settings-group', 'flattr_relpayment_enabled');
+        register_setting('flattr-settings-group', 'flattrss_relpayment_escaping_disabled');
         register_setting('flattr-settings-group', 'flattr_aut_page');
         register_setting('flattr-settings-group', 'flattr_aut');
         register_setting('flattr-settings-group', 'flattr_popout_enabled');
@@ -426,14 +428,12 @@ class Flattr
     public function render_user_settings() {
         include('settings-templates/header.php');
         include('settings-templates/user.php');
-        include('settings-templates/common.php');
         include('settings-templates/footer.php');
     }
 
     public function render_settings() {
         include('settings-templates/header.php');
         include('settings-templates/plugin.php');
-        include('settings-templates/common.php');
         include('settings-templates/footer.php');
     }
 
@@ -822,29 +822,42 @@ add_action('rss2_head', 'flattr_feed_rss2_head');
 add_action('atom_entry', 'flattr_feed_atom_item');
 add_action('rss2_item', 'flattr_feed_rss2_item');
 
+function flattr_feed_escape($string) {
+    if (get_option('flattrss_relpayment_escaping_disabled')) {
+        return $string;
+    }
+    return esc_attr($string);
+}
+
 function flattr_feed_atom_head() {
     if (get_option('flattrss_relpayment_enabled') && get_option('flattr_global_button')) {
-        echo '	<link rel="payment" title="Flattr this!" href="' . esc_attr(Flattr::getInstance()->getGlobalButton('autosubmitUrl')) . '" type="text/html" />'."\n";
+        echo '	<link rel="payment" title="Flattr this!" href="' . flattr_feed_escape(Flattr::getInstance()->getGlobalButton('autosubmitUrl')) . '" type="text/html" />'."\n";
     }
 }
 
 function flattr_feed_rss2_head() {
     if (get_option('flattrss_relpayment_enabled') && get_option('flattr_global_button')) {
-        echo '	<atom:link rel="payment" title="Flattr this!" href="' . esc_attr(Flattr::getInstance()->getGlobalButton('autosubmitUrl')) . '" type="text/html" />'."\n";
+        echo '	<atom:link rel="payment" title="Flattr this!" href="' . flattr_feed_escape(Flattr::getInstance()->getGlobalButton('autosubmitUrl')) . '" type="text/html" />'."\n";
     }
 }
 
 function flattr_feed_atom_item() {
     global $post;
     if (get_option('flattrss_relpayment_enabled') && in_array(get_post_type($post), (array)get_option('flattr_post_types', array()))) {
-        echo '		<link rel="payment" title="Flattr this!" href="' . esc_attr(Flattr::getInstance()->getButton("autosubmitUrl", $post)) . '" type="text/html" />'."\n";
+        $url = Flattr::getInstance()->getButton("autosubmitUrl", $post);
+        if (!empty($url)) {
+            echo '		<link rel="payment" title="Flattr this!" href="' . flattr_feed_escape($url) . '" type="text/html" />'."\n";
+        }
     }
 }
 
 function flattr_feed_rss2_item() {
     global $post;
     if (get_option('flattrss_relpayment_enabled') && in_array(get_post_type($post), (array)get_option('flattr_post_types', array()))) {
-        echo '	<atom:link rel="payment" title="Flattr this!" href="' . esc_attr(Flattr::getInstance()->getButton("autosubmitUrl", $post)) . '" type="text/html" />'."\n";
+        $url = Flattr::getInstance()->getButton("autosubmitUrl", $post);
+        if (!empty($url)) {
+            echo '	<atom:link rel="payment" title="Flattr this!" href="' . flattr_feed_escape($url) . '" type="text/html" />'."\n";
+        }
     }
 }
 

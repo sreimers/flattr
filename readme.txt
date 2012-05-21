@@ -61,8 +61,11 @@ Flattr buttons now detectable by browsers, site itself can now be flattred and a
 * New Feature: The site itself can now be become flattrable - both feeds and the frontpage will by default in new installs have a payment links for the site itself. Existing pages needs to activate the "Make frontpage flattrable" option.
 * New Feature: Added a widget with a Flattr button for the entire site.
 * New Feature: Added a [flattr] shortcode for easy inclusion of Flattr buttons in posts and pages
+* New Feature: A post can now specify a custom URL for the Flattr button to flattr instead of the post itself. Thanks for the patch [Erik](http://tapiren.se/2012/02/18/wordpress-flattr-plugin-1-0-1-custom-urls/)!
 * Fix: No longer prevents caching due to needless session initialization
 * Fix: Settings that can be overriden by a user setting is now by default not saved in a post but rather the site setting or user setting is instead picked when the button is viewed. This means that user settings for content type and language will now be respected.
+* Fix: Users with double encoding troubles of payment metadata in their feeds can now disable the encoding through the settings.
+* + more minor fixes and tweaks
 
 = 1.1.1 =
 * Added support for the new button popout. 
