@@ -257,9 +257,3 @@ Fixed tags
 
 = 0.4 =
 * First public version
-
-== Support ==
-
-For support requests regarding the wordpress plugin, please visit the plugin support forum: http://wordpress.org/tags/flattr?forum_id=10
-
-For every other Flattr support request head over to Flattr: https://flattr.com/support
