@@ -4,7 +4,7 @@ Donate link: https://flattr.com/donation/give/to/der_michael
 Tags: flattr, donate, micropayments
 Requires at least: 3.3
 Tested up to: 3.4
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 
 This plugin allows you to easily add a Flattr donation buttons to your blog and blog posts.
 
