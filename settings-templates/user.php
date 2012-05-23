@@ -55,10 +55,10 @@
         $client = new OAuth2Client(array_merge(array(
             'client_id'         => $key,
             'client_secret'     => $sec,
-            'base_url'          => 'https://api.flattr.com/rest/v2',
-            'site_url'          => 'https://flattr.com',
-            'authorize_url'     => 'https://flattr.com/oauth/authorize',
-            'access_token_url'  => 'https://flattr.com/oauth/token',
+            'base_url'          => 'https://api.' . Flattr::FLATTR_DOMAIN . '/rest/v2',
+            'site_url'          => 'https://' . Flattr::FLATTR_DOMAIN,
+            'authorize_url'     => 'https://' . Flattr::FLATTR_DOMAIN . '/oauth/authorize',
+            'access_token_url'  => 'https://' . Flattr::FLATTR_DOMAIN . '/oauth/token',
 
             'redirect_uri'      => $callback,
             'scopes'            => 'thing+flattr',
@@ -105,10 +105,10 @@
         $client = new OAuth2Client( array_merge(array(
             'client_id'         => $key,
             'client_secret'     => $sec,
-            'base_url'          => 'https://api.flattr.com/rest/v2',
-            'site_url'          => 'https://flattr.com',
-            'authorize_url'     => 'https://flattr.com/oauth/authorize',
-            'access_token_url'  => 'https://flattr.com/oauth/token',
+            'base_url'          => 'https://api.' . Flattr::FLATTR_DOMAIN . '/rest/v2',
+            'site_url'          => 'https://' . Flattr::FLATTR_DOMAIN,
+            'authorize_url'     => 'https://' . Flattr::FLATTR_DOMAIN . '/oauth/authorize',
+            'access_token_url'  => 'https://' . Flattr::FLATTR_DOMAIN . '/oauth/token',
 
             'redirect_uri'      => $callback,
             'scopes'            => 'thing+flattr',

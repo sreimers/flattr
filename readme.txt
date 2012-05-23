@@ -34,24 +34,25 @@ The shortcode is [flattr url="http://example.com/"]. It has many attributes but 
 Supported attributes are:
 
 * **url** - the URL that should be flattred. *Required*
-* **style** - overrides the default setting of the button style to use. Can be either "js", "text", "image" or "url".
-* **popout** - overrides the default setting on whether the popout should be shown. Should be either "on" or "off".
-* **compact** - overrides the default setting on whether the javascript button should be compact or not. Should be either "on" or "off".
+* **type** - overrides the default setting of the button style to use. Can be either "js", "compact", "text", "image" or "url".
+* **popout** - overrides the default setting on whether the popout should be shown. Should be either "yes" or "no".
 
 Additional autosubmit related attributes:
 
 * **user** - the username of the user owning the thing - needed for autosubmits.
-* **hidden** - overrides the default setting on whether an autosubmit of the thing should be hidden. Should be either "on" or "off".
+* **hidden** - overrides the default setting on whether an autosubmit of the thing should be hidden. Should be either "yes" or "no".
 * **language** - overrides the blog language as the language of an autosubmit of the thing. Should be a language code like en_GB.
 * **category** - overrides the default category for an autosubmit of the thing. Should be one of the [supported ones](http://developers.flattr.net/api/resources/categories/).
 * **title** - the title used in an autosubmit of the thing.
 * **description** - the description used in an autosubmit of the thing.
 * **tags** - a comma separated list of tags that's used in an autosubmit of the thing.
 
+For options that use "yes" or "no" you can instead of "no" use "n" or "off" - any other value will be interpreted as "yes".
+
 == Upgrade Notice ==
 
 = 1.2.0 =
-Flattr buttons now detectable by browsers, site itself can now be flattred and a new shortcode is available.
+Flattr buttons now detectable by browsers, site itself can now be flattred, a new shortcode and widgets is available etc.
 
 == Changelog ==
 
@@ -62,6 +63,8 @@ Flattr buttons now detectable by browsers, site itself can now be flattred and a
 * New Feature: Added a widget with a Flattr button for the entire site.
 * New Feature: Added a [flattr] shortcode for easy inclusion of Flattr buttons in posts and pages
 * New Feature: A post can now specify a custom URL for the Flattr button to flattr instead of the post itself. Thanks for the patch [Erik](http://tapiren.se/2012/02/18/wordpress-flattr-plugin-1-0-1-custom-urls/)!
+* New Feature: Made it possible to set a date from which the user specific button setting should be activated
+* Fix: User specific buttons can now be activated for all content
 * Fix: No longer prevents caching due to needless session initialization
 * Fix: Settings that can be overriden by a user setting is now by default not saved in a post but rather the site setting or user setting is instead picked when the button is viewed. This means that user settings for content type and language will now be respected.
 * Fix: Users with double encoding troubles of payment metadata in their feeds can now disable the encoding through the settings.

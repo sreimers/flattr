@@ -2,11 +2,11 @@
 /**
  * @package Flattr
  * @author Michael Henke
- * @version 1.2.0b3
+ * @version 1.2.0
 Plugin Name: Flattr
 Plugin URI: http://wordpress.org/extend/plugins/flattr/
 Description: Give your readers the opportunity to Flattr your effort
-Version: 1.2.0b3
+Version: 1.2.0
 Author: Michael Henke
 Author URI: http://www.codingmerc.com/tags/flattr/
 License: This code is (un)licensed under the kopimi (copyme) non-license; http://www.kopimi.com. In other words you are free to copy it, taunt it, share it, fork it or whatever. :)
@@ -16,11 +16,13 @@ Comment: The author of this plugin is not affiliated with the flattr company in 
 class Flattr
 {
     /**
-     * Javascript API URL without protocol part
+     * @deprecated
      */
-    const API_SCRIPT  = 'api.flattr.com/js/0.6/load.js?mode=auto';
+    const API_SCRIPT = 'api.flattr.com/js/0.6/load.js?mode=auto';
 
-    const VERSION = "1.2.0b3";
+    const FLATTR_DOMAIN = 'flattr.com';
+
+    const VERSION = "1.2.0";
 
     /**
      * We should only create Flattr once - make it a singleton
@@ -150,7 +152,7 @@ class Flattr
                 case "Flattr" :
                     $retval["text"] = "Flattr API v2";
                     
-                    $ch = curl_init ('https://api.flattr.com/rest/v2/users/der_michael');
+                    $ch = curl_init ('https://api.' . self::FLATTR_DOMAIN . '/rest/v2/users/der_michael');
                     curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true) ;
                     curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false) ;
                     $res = curl_exec ($ch) ;
@@ -186,10 +188,10 @@ class Flattr
             $client = new OAuth2Client(array_merge(array(
                 'client_id'         => $key,
                 'client_secret'     => $sec,
-                'base_url'          => 'https://api.flattr.com/rest/v2',
-                'site_url'          => 'https://flattr.com',
-                'authorize_url'     => 'https://flattr.com/oauth/authorize',
-                'access_token_url'  => 'https://flattr.com/oauth/token',
+                'base_url'          => 'https://api.' . self::FLATTR_DOMAIN . '/rest/v2',
+                'site_url'          => 'https://' . self::FLATTR_DOMAIN,
+                'authorize_url'     => 'https://' . self::FLATTR_DOMAIN . '/oauth/authorize',
+                'access_token_url'  => 'https://' . self::FLATTR_DOMAIN . '/oauth/token',
 
                 'redirect_uri'      => $callback,
                 'scopes'            => 'thing+flattr',
@@ -226,10 +228,10 @@ class Flattr
                 $client = new OAuth2Client( array_merge(array(
                     'client_id'         => $key,
                     'client_secret'     => $sec,
-                    'base_url'          => 'https://api.flattr.com/rest/v2',
-                    'site_url'          => 'https://flattr.com',
-                    'authorize_url'     => 'https://flattr.com/oauth/authorize',
-                    'access_token_url'  => 'https://flattr.com/oauth/token',
+                    'base_url'          => 'https://api.' . self::FLATTR_DOMAIN . '/rest/v2',
+                    'site_url'          => 'https://' . self::FLATTR_DOMAIN,
+                    'authorize_url'     => 'https://' . self::FLATTR_DOMAIN . '/oauth/authorize',
+                    'access_token_url'  => 'https://' . self::FLATTR_DOMAIN . '/oauth/token',
 
                     'redirect_uri'      => $callback,
                     'scopes'            => 'thing+flattr',
@@ -292,7 +294,7 @@ class Flattr
     }
 
     public function attsNormalize( $value ) {
-        return ($value == 'no' || empty($value)) ? false : $value;
+        return ($value == 'n' || $value == 'no' || $value == 'off' || empty($value)) ? false : $value;
     }
 
     public function register_shortcode( $atts ) {
@@ -309,8 +311,15 @@ class Flattr
             'title'       => null,
             'description' => null,
             'tags'        => null,
-            'style'       => get_option('flattr_button_style'),
+            'type'        => get_option('flattr_button_style'),
         ), $atts );
+
+        if ($atts['type'] == 'url') {
+            $atts['type'] = 'autosubmitUrl';
+        } else if ($atts['type'] == 'compact') {
+            $atts['type'] = 'js';
+            $atts['compact'] = true;
+        }
 
         $button = $this->getNonPostButton(array(
             'user_id'     => $atts['user'],
@@ -323,7 +332,7 @@ class Flattr
             'title'       => $atts['title'],
             'description' => $atts['description'],
             'tags'        => $atts['tags'],
-        ), $atts['style'] == 'url' ? 'autosubmitUrl' : $atts['style']);
+        ), $atts['type']);
 
         return empty($button) ? '' : $button;
     }
@@ -346,16 +355,16 @@ class Flattr
             var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
             s.type = 'text/javascript';
             s.async = true;
-            s.src = '<?php echo $this->proto . self::API_SCRIPT; ?>';
+            s.src = '<?php echo $this->proto . "api." . self::FLATTR_DOMAIN . "/js/0.6/load.js?mode=auto"; ?>';
             t.parentNode.insertBefore(s, t);
           })();
         </script><?php
     }
 
     public function insert_wizard() {
-        wp_deregister_script( 'jquery-dialog' );
-        wp_register_script( 'jquery-dialog', get_bloginfo('wpurl') . '/wp-content/plugins/flattr/jquery-ui-1.8.16.dialog.min.js');
-        wp_enqueue_script( 'jquery-dialog' );
+        wp_enqueue_script( 'jquery-ui-dialog' );
+        wp_enqueue_script( 'jquery-ui-datepicker' );
+
         wp_deregister_script( 'flattrscriptwizard' );
         wp_register_script( 'flattrscriptwizard', get_bloginfo('wpurl') . '/wp-content/plugins/flattr/wizard.js');
         wp_enqueue_script( 'flattrscriptwizard' );
@@ -383,6 +392,7 @@ class Flattr
         register_setting('flattr-settings-group', 'flattr_button_style');
         register_setting('flattr-settings-group', 'flattrss_custom_image_url');
         register_setting('flattr-settings-group', 'user_based_flattr_buttons');
+        register_setting('flattr-settings-group', 'user_based_flattr_buttons_since_time', 'strtotime');
         register_setting('flattr-settings-group', 'flattr_global_button');
         register_setting('flattr-settings-group', 'flattrss_button_enabled');
         register_setting('flattr-settings-group', 'flattrss_relpayment_enabled');
@@ -421,8 +431,8 @@ class Flattr
     public function admin_styles() {
         wp_register_style( 'flattr_admin_style', plugins_url('flattr.css', __FILE__) );
         wp_enqueue_style( 'flattr_admin_style' );
-        wp_register_style( 'jquery-dialog_style', plugins_url('jquery-ui-1.8.16.dialog.css', __FILE__) );
-        wp_enqueue_style( 'jquery-dialog_style' );
+        wp_register_style( 'flattr-jquery-ui-style', plugins_url('jquery-ui/style.css', __FILE__) );
+        wp_enqueue_style( 'flattr-jquery-ui-style' );
     }
 
     public function render_user_settings() {
@@ -549,7 +559,7 @@ class Flattr
         {
                 return '';
         }
-        if (get_option('user_based_flattr_buttons_since_time')< strtotime(get_the_time("c",$post))) {
+        if (get_option('user_based_flattr_buttons_since_time') == '' || intval(get_option('user_based_flattr_buttons_since_time')) < strtotime(get_the_time("c",$post))) {
             $flattr_uid = (get_option('user_based_flattr_buttons')&& get_user_meta(get_the_author_meta('ID'), "user_flattr_uid", true)!="")? get_user_meta(get_the_author_meta('ID'), "user_flattr_uid", true): get_option('flattr_uid');
         } else {
             $flattr_uid = get_option('flattr_uid');
@@ -677,7 +687,7 @@ class Flattr
 
         $params = (empty($params['user_id']) ? array('url' => $params['url']) : array_filter($params));
 
-        return 'https://flattr.com/submit/auto?' . http_build_query($params);
+        return 'https://' . self::FLATTR_DOMAIN . '/submit/auto?' . http_build_query($params);
     }
 
     protected static $languages;
@@ -960,10 +970,10 @@ function new_flattrss_autosubmit_action () {
         $client = new OAuth2Client( array_merge(array(
             'client_id'         => $oauth_token,
             'client_secret'     => $oauth_token_secret,
-            'base_url'          => 'https://api.flattr.com/rest/v2',
-            'site_url'          => 'https://flattr.com',
-            'authorize_url'     => 'https://flattr.com/oauth/authorize',
-            'access_token_url'  => 'https://flattr.com/oauth/token',
+            'base_url'          => 'https://api.' . self::FLATTR_DOMAIN . '/rest/v2',
+            'site_url'          => 'https://' . self::FLATTR_DOMAIN,
+            'authorize_url'     => 'https://' . self::FLATTR_DOMAIN . '/oauth/authorize',
+            'access_token_url'  => 'https://' . self::FLATTR_DOMAIN . '/oauth/token',
 
             'redirect_uri'      => urlencode(home_url()."/wp-admin/admin.php?page=flattr/flattr.php"),
             'scopes'            => 'thing+flattr',

@@ -6,6 +6,8 @@ if (isset ($_GET['id'])&&
 
     header('Status-Code: 307');
 
+    $flattr_domain = 'flattr.com';
+
     $old_charset = ini_get('default_charset');
     ini_set('default_charset',get_option('blog_charset'));
 
@@ -89,7 +91,7 @@ if (isset ($_GET['id'])&&
     else
         $flattr_uid = get_option('flattr_uid');
 
-    $location = "https://flattr.com/submit/auto?user_id=".urlencode($flattr_uid).
+    $location = "https://" . $flattr_domain . "/submit/auto?user_id=".urlencode($flattr_uid).
                 "&url=".urlencode($url).
                 "&title=".urlencode($title).
                 "&description=".urlencode($content).

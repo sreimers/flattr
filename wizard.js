@@ -24,6 +24,7 @@ var wizard = {
         jQuery(".flattr-wrap div#dialog").dialog({
             modal: true,
             height: 250,
+            resizable: false,
             buttons: [
                 {
                     text: "Check",
