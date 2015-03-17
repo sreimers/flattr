@@ -63,7 +63,7 @@ class Flattr
      * prepare Frontend
      */
     protected function frontend() {
-        if (!in_array(get_option('flattr_button_style'), array('text', 'image'))) {
+        if (!in_array(get_option('flattr_button_style'), array('text', 'image', 'image-white'))) {
             add_action('wp_print_footer_scripts', array($this, 'insert_script'));
         }
 
@@ -533,8 +533,11 @@ class Flattr
                 $retval = '<a href="'. esc_attr($this->getAutosubmitUrl($buttonData)) .'" title="Flattr" target="_blank">Flattr this!</a>';
                 break;
             case "image":
-                $retval = '<a href="'. esc_attr($this->getAutosubmitUrl($buttonData)) .'" title="Flattr" target="_blank"><img src="'. get_bloginfo('wpurl') . '/wp-content/plugins/flattr/img/flattr-badge-large.png" alt="flattr this!"/></a>';
+                $retval = '<a href="'. esc_attr($this->getAutosubmitUrl($buttonData)) .'" title="Flattr" target="_blank">'. Flattr::getStaticImageButton($type) .'</a>';
                 break;
+			case "image-white":
+                $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank">'. Flattr::getStaticImageButton($type) .'</a>';
+				break;
             case "autosubmitUrl":
                 $retval = $this->getAutosubmitUrl($buttonData);
                 break;
@@ -628,8 +631,11 @@ class Flattr
                         $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank">Flattr this!</a>';
                         break;
                     case "image":
-                        $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank"><img src="'. get_bloginfo('wpurl') . '/wp-content/plugins/flattr/img/flattr-badge-large.png" alt="flattr this!"/></a>';
+                        $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank">'. Flattr::getStaticImageButton($type) .'</a>';
                         break;
+					case "image-white":
+	                    $retval = '<a href="'. static_flattr_url($post).'" title="Flattr" target="_blank">'. Flattr::getStaticImageButton($type) .'</a>';
+						break;
                     case "autosubmitUrl":
                         $retval = $this->getAutosubmitUrl($buttonData);
                         break;
@@ -689,6 +695,39 @@ class Flattr
 
         return 'https://' . self::FLATTR_DOMAIN . '/submit/auto?' . http_build_query($params);
     }
+	
+	public static function getStaticImageButton($type=null) {
+		
+		$imgBaseURL = get_bloginfo('wpurl') . '/wp-content/plugins/flattr/img/';
+		
+		$srcset = "";
+		$src = "";
+		
+		switch (empty($type) ? get_option('flattr_button_style') : $type) {
+			
+			case "image":
+				$src = $imgBaseURL . "flattr-badge-large.png";
+				
+				$custom = get_option('flattrss_custom_image_url');
+				if ($src != $custom) {
+					$src = $custom;
+				}
+				
+				$srcset .= $src;
+				break;
+			case "image-white":
+				$src = $imgBaseURL . "flattr-badge-white.png";
+				$srcset .= $src . ", " . $imgBaseURL . "flattr-badge-white@2x.png 2x";
+				$srcset .= $src . ", " . $imgBaseURL . "flattr-badge-white@3x.png 3x";
+				break;
+
+		}
+
+		$imgTag = '<img src="' . $src . '" srcset="'. $srcset . '" alt="Flattr this!"/>';
+		
+		return $imgTag;
+				
+	}
 
     protected static $languages;
     public static function getLanguages() {
@@ -807,7 +846,16 @@ function flattr_post2rss($content) {
     $postmeta = isset($meta['_flattr_btn_disable'])? $meta['_flattr_btn_disable'] : true;
 
     if (($postmeta) && is_feed() && in_array(get_post_type(), $flattr_post_types)) {
-        $flattr.= ' <p><a href="'. static_flattr_url($post).'" title="Flattr" target="_blank"><img src="'. get_option('flattrss_custom_image_url') .'" alt="flattr this!"/></a></p>';
+		
+		// Determine which button style to use. Default: image-white.
+		$button_style_pref = get_option('flattr_button_style');
+		$button_type = $button_style_pref;
+		if ($button_type != "image" && $button_type != "image-white") {
+			$button_type = "image-white";
+		}
+				
+		$flattr.= '<p><a href="'. static_flattr_url($post) .'">' . Flattr::getStaticImageButton($button_type) . '</a></p>';
+		
     }
     return ($content.$flattr);
 }
@@ -1031,6 +1079,7 @@ if (get_option('flattrss_autosubmit') && get_option('flattr_access_token')) {
 /**
  * prints the Flattr button
  * Use this from your template
+ * @param type the button type. See Flattr->getButton for details.
  */
 function the_flattr_permalink()
 {

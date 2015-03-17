@@ -136,8 +136,13 @@
                 <span class="description"><label for="flattr_button_style_js"><?php _e('Dynamic javascript version'); ?></label></span>
             </li>
             <li>
+                <input type="radio" name="flattr_button_style" value="image-white"<?=(get_option('flattr_button_style')=="image-white")?" checked":"";?>/>
+                <?= Flattr::getStaticImageButton($type='image-white') ?>
+                <span class="description"><?php _e('Static green-white image with with HiDPI support using srcset.'); ?></span>
+            </li>
+            <li>
                 <input type="radio" id="flattr_button_style_image" name="flattr_button_style" value="image"<?=(get_option('flattr_button_style')=="image")?" checked":"";?>/>
-                <img src="<?=get_option('flattrss_custom_image_url');?>"/>
+                <?= Flattr::getStaticImageButton('image') ?>
                 <span class="description"><label for="flattr_button_style_image"><?php _e('Static image version'); ?></label></span>
             </li>
             <li>
@@ -169,7 +174,7 @@
         Default Value:<br>
         <input type="text" size="70" value="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/flattr/img/flattr-badge-large.png';?>" readonly><br />
         <?php } ?>
-        <span class="description"><?php _e('Only applies to the static image button type and the feed buttons.'); ?></span>
+        <span class="description"><?php _e('Only applies to button on site and in feed if the static (non-white) image type is selected.'); ?></span>
     </td>
 </tr>
 <tr>
