@@ -56,6 +56,9 @@ Flattr buttons now detectable by browsers, site itself can now be flattred, a ne
 
 == Changelog ==
 
+= 1.2.1 =
+* New Feature: Nicer, modern-looking static buttons for both pages and feed with support for "HiDPI" displays.
+
 = 1.2.0 =
 * New Feature: The payment links in RSS/Atom can now be added without adding the graphical buttons and are now on by default
 * New Feature: Payment links are now not only included in feed entries - they are now also by default included in the head-tag of entry pages which is usable for eg. browser extensions to detect the existence of a flattr button.
