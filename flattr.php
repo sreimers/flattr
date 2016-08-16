@@ -1018,10 +1018,10 @@ function new_flattrss_autosubmit_action () {
         $client = new OAuth2Client( array_merge(array(
             'client_id'         => $oauth_token,
             'client_secret'     => $oauth_token_secret,
-            'base_url'          => 'https://api.' . self::FLATTR_DOMAIN . '/rest/v2',
-            'site_url'          => 'https://' . self::FLATTR_DOMAIN,
-            'authorize_url'     => 'https://' . self::FLATTR_DOMAIN . '/oauth/authorize',
-            'access_token_url'  => 'https://' . self::FLATTR_DOMAIN . '/oauth/token',
+            'base_url'          => 'https://api.' . Flattr::FLATTR_DOMAIN . '/rest/v2',
+            'site_url'          => 'https://' . Flattr::FLATTR_DOMAIN,
+            'authorize_url'     => 'https://' . Flattr::FLATTR_DOMAIN . '/oauth/authorize',
+            'access_token_url'  => 'https://' . Flattr::FLATTR_DOMAIN . '/oauth/token',
 
             'redirect_uri'      => urlencode(home_url()."/wp-admin/admin.php?page=flattr/flattr.php"),
             'scopes'            => 'thing+flattr',
